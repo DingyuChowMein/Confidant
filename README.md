@@ -1,6 +1,8 @@
 # confidant
 
-A new Flutter application.
+AI-based cognitive behavioural therapy for lonely drunks 
+
+https://www.youtube.com/watch?v=BZ_UId3nDn8
 
 ## Getting Started
 
