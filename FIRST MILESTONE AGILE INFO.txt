@@ -1,0 +1,16 @@
+TO COVER:
+
+Overview: Give a brief reminder of the context/purpose of your application.
+=============
+
+Iteration Planning: Briefly identify and justify the features you decided to add to the application in this iteration.
+=============
+
+Progress Demonstration: Briefly demonstrate the current state of these features.
+=============
+
+Progress Reflection: Briefly discuss and reflect on user feedback for these additions.
+=============
+
+HCD/SE Techniques: Show that you have applied that week’s requested Human Centred De-sign/Software Engineering technique(s).
+=============
