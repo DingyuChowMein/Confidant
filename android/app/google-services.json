@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "768219674577",
+    "firebase_url": "https://confidant-eb580.firebaseio.com",
+    "project_id": "confidant-eb580",
+    "storage_bucket": "confidant-eb580.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768219674577:android:d24f78a7e5d98fe0",
+        "android_client_info": {
+          "package_name": "webapps.confidant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "768219674577-ntqfmgb4ttpeqbna82s1ih7r3s9hmulq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBELo6CZWXSQlyOUhRcgcqmsb8U2FL-0n0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "768219674577-ntqfmgb4ttpeqbna82s1ih7r3s9hmulq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "768219674577-990hekvrprka6iu0jbd5hrmcdhg33b8r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "webapps.confidant"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
