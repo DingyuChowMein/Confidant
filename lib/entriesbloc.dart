@@ -9,10 +9,12 @@ class EntriesBLoC {
   void refresh() async {
     var sp = await SharedPreferences.getInstance();
     entryList = [];
-    for (var dt in sp.getStringList(Entry.ENTRIES_LIST_ID)) {
-      entryList.add(Entry(dateTime: dt,
-          title: sp.getString('$dt-title'),
-          body: sp.getString('$dt-body')));
+    if (sp.getStringList(Entry.ENTRIES_LIST_ID) != null) {
+      for (var dt in sp.getStringList(Entry.ENTRIES_LIST_ID)) {
+        entryList.add(Entry(dateTime: dt,
+            title: sp.getString('$dt-title'),
+            body: sp.getString('$dt-body')));
+      }
     }
     listSink.add(entryList);
   }

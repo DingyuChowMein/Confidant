@@ -13,7 +13,6 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
-
   @override
   Widget build(BuildContext context) {
     ScopeBaseWidget.of(context).bloc.refresh();
@@ -32,10 +31,8 @@ class _ListPageState extends State<ListPage> {
                   if (snapshot.data == null || snapshot.data.length == 0)
                     return Container(
                       padding: EdgeInsets.all(10),
-                      child: Text(
-                        'Add Your Notes Here',
-                        style:  TextStyle(fontSize: 32, color: Colors.black)
-                      ),
+                      child: Text('Add Your Notes Here',
+                          style: TextStyle(fontSize: 32, color: Colors.black)),
                     );
                   return ListView.builder(
                     itemCount: snapshot.data?.length ?? 0,
@@ -47,14 +44,16 @@ class _ListPageState extends State<ListPage> {
           // Divider(),
         ],
       )),
-      /*Center(
-        child: RaisedButton(
-          child: Text('Make new note'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+      floatingActionButton: FloatingActionButton(
+        onPressed: () =>
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>
+              EntryPage.newEntry())),
+        child: Icon(
+          Icons.add,
+          color: Colors.yellow,
         ),
-      ),*/
+        foregroundColor: Colors.pink,
+      ),
     );
   }
 
@@ -81,7 +80,7 @@ class EntryListItem extends StatelessWidget {
         children: <Widget>[
           Icon(Icons.accessible, color: Theme.of(context).iconTheme.color),
           SizedBox(width: 3),
-          Text(entry.dateTime)
+          Text(entry.title)
         ],
       ),
     );
