@@ -62,4 +62,4 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'  // Google Play services Gradle plugin
 
-//implementation 'com.google.firebase:firebase-database:17.0.0'
+implementation 'com.google.firebase:firebase-database:17.0.0'
