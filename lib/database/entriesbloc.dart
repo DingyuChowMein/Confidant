@@ -1,11 +1,14 @@
 import 'dart:async';
-import 'entry.dart';
+import 'package:confidant/database/entry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // [B]usiness [Lo]gic [C]omponent Pattern
 class EntriesBLoC {
   List<Entry> entryList;
 
+  /** TODO: PROPER DATABASE STUFF**/
+
+  // PLACEHOLDER DATABASE MANAGEMENT
   void refresh() async {
     var sp = await SharedPreferences.getInstance();
     entryList = [];

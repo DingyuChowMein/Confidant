@@ -10,6 +10,9 @@ class Entry {
   // constructor
   Entry({this.dateTime, this.title = "", this.body = ""});
 
+  /** TODO: PROPER DATABASE STUFF**/
+
+  // PLACEHOLDER DATABASE MANAGEMENT
   void save() async {
     dateTime ??= DateTime.now().toIso8601String();
     var sp = await SharedPreferences.getInstance();
@@ -26,6 +29,7 @@ class Entry {
     sp.setStringList(ENTRIES_LIST_ID, entryList);
   }
 
+  // PLACEHOLDER DATABASE MANAGEMENT
   void delete() async {
     var sp = await SharedPreferences.getInstance();
     sp.setString('$dateTime-title', null);

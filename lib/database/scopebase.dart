@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'entriesbloc.dart';
+import 'package:confidant/database/entriesbloc.dart';
 
 class ScopeBaseWidget extends InheritedWidget {
   final bloc = EntriesBLoC();
