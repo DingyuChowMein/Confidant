@@ -28,10 +28,19 @@ class _EntryPageState extends State<EntryPage> {
   // us to validate the form
   var _formKey = GlobalKey<FormState>();
 
+  void saveEntry() {
+    // calls 'validate' on all widgets in current state
+    _formKey.currentState.validate();
+    // calls 'save' on all widgets in current state
+    _formKey.currentState.save();
+    entry.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
+          saveEntry();
           ScopeBaseWidget.of(context).bloc.refresh();
           return true;
         },
@@ -110,14 +119,7 @@ class _EntryPageState extends State<EntryPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     FlatButton(
-                      onPressed: () {
-                        // this calls 'validate' on all widgets in current state
-                        if (_formKey.currentState.validate()) {
-                          // calls 'save' on all widgets in current state
-                          _formKey.currentState.save();
-                          entry.save();
-                        }
-                      }, //Save Button
+                      onPressed: () => saveEntry(), //Save Button
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.save,
