@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:confidant/pages/list.dart';
-import 'package:confidant/pages/entrypage.dart';
+import 'package:confidant/page/list.dart';
+import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/database/scopebase.dart';
 
 // probalby maybe i guess ought to go in different place

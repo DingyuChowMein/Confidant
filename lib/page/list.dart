@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import 'package:confidant/pages/entrypage.dart';
+import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/database/entry.dart';
 import 'package:confidant/database/scopebase.dart';
 import 'package:confidant/main.dart';

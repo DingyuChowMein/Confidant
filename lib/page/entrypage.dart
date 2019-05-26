@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:confidant/main.dart';
 import 'package:confidant/database/entry.dart';
 import 'package:confidant/database/scopebase.dart';
-import 'package:confidant/widgets/radarlove.dart';
+import 'package:confidant/widget/radarlove.dart';
 import 'package:confidant/emotion/emotions.dart';
 
 class EntryPage extends StatefulWidget {
