@@ -4,6 +4,7 @@ import 'package:confidant/main.dart';
 import 'package:confidant/database/entry.dart';
 import 'package:confidant/database/scopebase.dart';
 import 'package:confidant/widget/radarlove.dart';
+import 'package:confidant/widget/entrytextinput.dart';
 import 'package:confidant/emotion/emotions.dart';
 
 class EntryPage extends StatefulWidget {
@@ -90,39 +91,17 @@ class _EntryPageState extends State<EntryPage> {
                       )
                     ]),
               ),
-              body: new LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                return Container(
-                    padding: EdgeInsets.all(15),
-                    height: double.infinity,
-                    child: SingleChildScrollView(
-                        child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                minHeight: constraints.maxHeight),
-                            child: IntrinsicHeight(
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Expanded(
-                                        child: TextFormField(
-                                      initialValue: entry.body,
-                                      onSaved: (s) => entry.body = s,
-                                      validator: (s) => s.length > 2
-                                          ? null
-                                          : 'Give it a body',
-                                      textCapitalization:
-                                          TextCapitalization.sentences,
-                                      keyboardType: TextInputType.multiline,
-                                      maxLines: null,
-                                      style: Theme.of(context).textTheme.body1,
-                                      decoration: InputDecoration.collapsed(
-                                          hintText: 'Type'),
-                                    )),
-                                  ]),
-                            ))));
-              }),
+              body: EntryTextInput(
+                  textFormField: TextFormField(
+                initialValue: entry.body,
+                onSaved: (s) => entry.body = s,
+                validator: (s) => s.length > 2 ? null : 'Give it a body',
+                textCapitalization: TextCapitalization.sentences,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                style: Theme.of(context).textTheme.body1,
+                decoration: InputDecoration.collapsed(hintText: 'Type'),
+              )),
               bottomNavigationBar: BottomAppBar(
                 color: Theme.of(context).buttonColor,
                 child: Row(

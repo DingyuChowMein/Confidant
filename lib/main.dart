@@ -20,7 +20,7 @@ class Confidant extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         textTheme: TextTheme(
           title: TextStyle(fontSize: 32, color: Colors.white),
-          body1: TextStyle(fontSize: 18),
+          body1: TextStyle(fontSize: 24),
         ),
       ),
       home: ListPage(),
