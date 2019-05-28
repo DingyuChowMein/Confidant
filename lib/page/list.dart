@@ -6,6 +6,8 @@ import 'package:confidant/database/entry.dart';
 import 'package:confidant/database/scopebase.dart';
 import 'package:confidant/main.dart';
 
+import 'dart:async';
+
 class ListPage extends StatefulWidget {
   ListPage({Key key, this.title}) : super(key: key);
   final String title;
@@ -90,9 +92,51 @@ class EntryListItem extends StatelessWidget {
   const EntryListItem({Key key, this.entry, @required this.controller})
       : super(key: key);
 
+  FutureOr<bool> verifyDeletionIntention(context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          //title: Text('Delete'),
+          content: Text('Are you sure you\'d like to delete this entry?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                entry.delete();
+                ScopeBaseWidget.of(context).bloc.refresh();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Slidable(
+      key: ValueKey(entry.dateTime),
+      dismissal: SlidableDismissal(
+        dismissThresholds: <SlideActionType, double>{
+          SlideActionType.secondary: 1.0
+        },
+        child: SlidableDrawerDismissal(),
+        onWillDismiss: (actionType) {
+          return verifyDeletionIntention(context);
+        },
+        onDismissed: (actionType) {
+          //if (actionType == SlideActionType.primary) {
+          //          // ...
+        },
+      ),
       controller: controller,
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.2,
@@ -107,7 +151,8 @@ class EntryListItem extends StatelessWidget {
             foregroundColor: Colors.white,
           ),
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
-          subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE), style: Theme.of(context).textTheme.subtitle),
+          subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
+              style: Theme.of(context).textTheme.subtitle),
           onTap: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => EntryPage(entry))),
         ),
@@ -118,8 +163,7 @@ class EntryListItem extends StatelessWidget {
             color: Colors.red,
             icon: Icons.delete,
             onTap: () {
-              entry.delete();
-              ScopeBaseWidget.of(context).bloc.refresh();
+              verifyDeletionIntention(context);
             })
       ],
       secondaryActions: <Widget>[
