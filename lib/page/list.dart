@@ -55,8 +55,9 @@ class _ListPageState extends State<ListPage> {
                     );
                   return ListView.builder(
                     itemCount: snapshot.data?.length ?? 0,
-                    itemBuilder: (context, i) =>
-                        EntryListItem(entry: snapshot.data[i], controller: slidableController),
+                    itemBuilder: (context, i) => EntryListItem(
+                        entry: snapshot.data[i],
+                        controller: slidableController),
                   );
                 }),
           ),
@@ -86,7 +87,8 @@ class EntryListItem extends StatelessWidget {
   final Entry entry;
   final SlidableController controller;
 
-  const EntryListItem({Key key, this.entry, @required this.controller}) : super(key: key);
+  const EntryListItem({Key key, this.entry, @required this.controller})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +106,8 @@ class EntryListItem extends StatelessWidget {
             child: Icon(Icons.tag_faces),
             foregroundColor: Colors.white,
           ),
-          title: Text(entry.title),
-          subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE)),
+          title: Text(entry.title, style: Theme.of(context).textTheme.body2),
+          subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE), style: Theme.of(context).textTheme.subtitle),
           onTap: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => EntryPage(entry))),
         ),

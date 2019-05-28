@@ -17,10 +17,12 @@ class Confidant extends StatelessWidget {
         child: MaterialApp(
       title: 'Confidant',
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.grey,
         textTheme: TextTheme(
           title: TextStyle(fontSize: 32, color: Colors.white),
+          subtitle: TextStyle(fontSize: 14),
           body1: TextStyle(fontSize: 24),
+          body2: TextStyle(fontSize: 18),
         ),
       ),
       home: ListPage(),

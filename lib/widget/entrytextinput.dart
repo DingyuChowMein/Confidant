@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class EntryTextInput extends StatelessWidget {
+  static const double INSET_AMOUNT = 8.0;
   TextFormField textFormField;
 
   EntryTextInput({this.textFormField});
 
   @override
   Widget build(BuildContext context) {
-    ///double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    double fontSize = Theme.of(context).textTheme.body1.fontSize; /// devicePixelRatio;
+    double fontSize = Theme.of(context).textTheme.body1.fontSize;
+
+    /// devicePixelRatio;
     num width;
     num height;
     return LayoutBuilder(
@@ -16,7 +18,6 @@ class EntryTextInput extends StatelessWidget {
       height = constraints.maxHeight;
       width = constraints.maxWidth;
       return Container(
-        //padding: EdgeInsets.all(15),
         height: double.infinity,
         child: SingleChildScrollView(
             child: ConstrainedBox(
@@ -27,10 +28,13 @@ class EntryTextInput extends StatelessWidget {
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Expanded(child: textFormField),
+                              Expanded(
+                                  child: Padding(
+                                      padding: EdgeInsets.all(INSET_AMOUNT),
+                                      child: textFormField)),
                             ]),
-                        painter:
-                            EntryTextInputPainter(height, width, fontSize))))),
+                        painter: EntryTextInputPainter(
+                            height, width, fontSize))))),
       );
     });
   }
@@ -41,12 +45,14 @@ class EntryTextInputPainter extends CustomPainter {
   num width;
   num fontSize;
 
-  EntryTextInputPainter(this.height, this.width, this.fontSize);
+  EntryTextInputPainter(
+      this.height, this.width, this.fontSize);
 
   double calcLineIncrementAmount() {
-    TextSpan ts = new TextSpan(text: 'a', style: TextStyle(fontSize: fontSize));
-    TextPainter tp = new TextPainter(text: ts, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
-    tp.layout();
+    TextSpan ts = TextSpan(text: 'a', style: TextStyle(fontSize: fontSize));
+    TextPainter tp = TextPainter(
+        text: ts, textAlign: TextAlign.left, textDirection: TextDirection.ltr)
+      ..layout();
     return tp.size.height;
   }
 
@@ -58,7 +64,7 @@ class EntryTextInputPainter extends CustomPainter {
 
     double lineIncrementAmount = calcLineIncrementAmount();
 
-    for (double h = 0; h < 1000; h += lineIncrementAmount) {
+    for (double h = EntryTextInput.INSET_AMOUNT; h < 1000; h += lineIncrementAmount) {
       canvas.drawLine(Offset(0, h), Offset(width, h), paint);
     }
   }

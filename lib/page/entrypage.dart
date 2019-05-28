@@ -75,19 +75,21 @@ class _EntryPageState extends State<EntryPage> {
               ])),
               appBar: AppBar(
                 title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Expanded(
-                        child: TextFormField(
-                          initialValue:
-                              entry.title == "" ? "Untitled" : entry.title,
-                          onSaved: (s) => entry.title = s,
-                          validator: (s) =>
-                              s.length > 2 ? null : 'Give it a title',
-                          textCapitalization: TextCapitalization.sentences,
-                          style: Theme.of(context).textTheme.title,
-                          decoration: InputDecoration(border: InputBorder.none),
-                        ),
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4),
+                            child: TextFormField(
+                              initialValue:
+                                  entry.title == "" ? "Untitled" : entry.title,
+                              onSaved: (s) => entry.title = s,
+                              validator: (s) =>
+                                  s.length > 2 ? null : 'Give it a title',
+                              textCapitalization: TextCapitalization.sentences,
+                              style: Theme.of(context).textTheme.title,
+                              decoration: InputDecoration(border: InputBorder.none),
+                            )),
                       )
                     ]),
               ),
