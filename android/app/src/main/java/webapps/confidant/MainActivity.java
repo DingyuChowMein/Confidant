@@ -1,8 +1,15 @@
 package webapps.confidant;
 
 import android.os.Bundle;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
+import com.ibm.cloud.sdk.core.service.security.IamOptions;
+import com.ibm.watson.tone_analyzer.v3.ToneAnalyzer;
+import com.ibm.watson.tone_analyzer.v3.model.ToneAnalysis;
+import com.ibm.watson.tone_analyzer.v3.model.ToneOptions;
+
 
 public class MainActivity extends FlutterActivity {
   @Override
