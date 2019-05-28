@@ -43,18 +43,22 @@ class EntryTextInputPainter extends CustomPainter {
 
   EntryTextInputPainter(this.height, this.width, this.fontSize);
 
+  double calcLineIncrementAmount() {
+    TextSpan ts = new TextSpan(text: 'a', style: TextStyle(fontSize: fontSize));
+    TextPainter tp = new TextPainter(text: ts, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
+    tp.layout();
+    return tp.size.height;
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = new Paint()
       ..strokeWidth = 1
       ..color = Colors.grey;
 
-    /*TextSpan ts = new TextSpan(text: 'a', style: TextStyle(fontSize: 24));
-    TextPainter tp = new TextPainter(text: ts, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
-    tp.layout();
-    double plusser = tp.size.height;*/ // this returns 28
+    double lineIncrementAmount = calcLineIncrementAmount();
 
-    for (double h = 0; h < 10000; h += fontSize + 4) {
+    for (double h = 0; h < 1000; h += lineIncrementAmount) {
       canvas.drawLine(Offset(0, h), Offset(width, h), paint);
     }
   }
