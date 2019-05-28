@@ -9,10 +9,26 @@ public class MainActivity extends FlutterActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     GeneratedPluginRegistrant.registerWith(this);
+
+    // make native API call from method channel
+    new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
+            new MethodChannel.MethodCallHandler() {
+
+
+              // triggers Native API call when method "analyzeEntry" is called from
+              // Dart file.
+              @Override
+              public void onMethodCall(MethodCall call, MethodChannel.Result result) {
+                if (call.method.equals("analyzeEntry")) {
+                  String greetings = makeAnalysisCall(call.arguments());
+                  result.success(greetings);
+                }
+              }});
   }
 
 
   // Makes an API call providing emotional analysis on given text object
+  // Currently returns JSON as text.
   private String makeAnalysisCall(Object obj) {
     String textToAnalyze = obj.toString();
     IamOptions options = new IamOptions.Builder()
@@ -25,7 +41,6 @@ public class MainActivity extends FlutterActivity {
     ToneOptions toneOptions = new ToneOptions.Builder().text(textToAnalyze).build();
     ToneAnalysis toneAnalysis = toneAnalyzer.tone(toneOptions).execute().getResult();
     return toneAnalysis.getDocumentTone().toString();
-
   }
 
 }
