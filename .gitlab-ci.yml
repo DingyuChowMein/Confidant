@@ -1,0 +1,17 @@
+stages:
+    - build
+    - test
+    - deploy
+    
+build:
+    stage: build
+    script:
+    
+test:
+    stage: test
+    script:
+    
+deply:
+    stage: deploy
+    script:
+    
