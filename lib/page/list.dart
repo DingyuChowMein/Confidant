@@ -4,7 +4,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
-
+import 'package:confidant/authentication/login.dart';
+import 'package:confidant/authentication/auth.dart';
 import 'dart:async';
 
 class ListPage extends StatefulWidget {
@@ -38,7 +39,9 @@ class _ListPageState extends State<ListPage> {
             IconButton(
               icon: Icon(Icons.account_circle),
               /** TODO: LOGIN STUFF**/
-              onPressed: () {},
+              onPressed: () {   Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => new LoginSignUpPage(auth: new Auth()))); },
+                //LoginSignUpPage(auth: new Auth());
             ),
           ]),
       body: Container(
