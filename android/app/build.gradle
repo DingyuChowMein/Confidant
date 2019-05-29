@@ -39,6 +39,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true;
     }
 
     buildTypes {
@@ -54,10 +55,17 @@ flutter {
     source '../..'
 }
 
+repositories {
+    maven {
+        url  "https://dl.bintray.com/ibm-cloud-sdks/ibm-cloud-sdk-repo"
+    }
+}
+
 dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    compile 'com.ibm.watson:ibm-watson:7.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'  // Google Play services Gradle plugin

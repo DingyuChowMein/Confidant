@@ -12,6 +12,8 @@ import com.ibm.watson.tone_analyzer.v3.model.ToneOptions;
 
 
 public class MainActivity extends FlutterActivity {
+  private static final String CHANNEL = "flutter.native/helper";
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
