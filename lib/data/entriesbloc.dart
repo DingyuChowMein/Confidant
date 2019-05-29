@@ -1,24 +1,12 @@
 import 'dart:async';
-import 'package:confidant/database/entry.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:confidant/data/database.dart';
 
 // [B]usiness [Lo]gic [C]omponent Pattern
 class EntriesBLoC {
   List<Entry> entryList;
 
-  /** TODO: PROPER DATABASE STUFF**/
-
-  // PLACEHOLDER DATABASE MANAGEMENT
   void refresh() async {
-    var sp = await SharedPreferences.getInstance();
-    entryList = [];
-    if (sp.getStringList(Entry.ENTRIES_LIST_ID) != null) {
-      for (var dt in sp.getStringList(Entry.ENTRIES_LIST_ID)) {
-        entryList.add(Entry(dateTime: dt,
-            title: sp.getString('$dt-title'),
-            body: sp.getString('$dt-body')));
-      }
-    }
+    var entryList = await EntriesDatabase.get().getEntries();
     listSink.add(entryList);
   }
 

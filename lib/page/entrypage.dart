@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:confidant/main.dart';
-import 'package:confidant/database/entry.dart';
-import 'package:confidant/database/scopebase.dart';
+import 'package:confidant/data/database.dart';
+import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/widget/radarlove.dart';
 import 'package:confidant/widget/entrytextinput.dart';
 import 'package:confidant/emotion/emotions.dart';
@@ -19,8 +18,8 @@ class EntryPage extends StatefulWidget {
 }
 
 class _EntryPageState extends State<EntryPage> {
-  String nowString =
-      new DateTime.now().toIso8601String().substring(0, NUM_CHARS_IN_DATE);
+  //String nowString =
+  //    new DateTime.now().toIso8601String().substring(0, NUM_CHARS_IN_DATE);
   Entry entry;
 
   _EntryPageState(this.entry);

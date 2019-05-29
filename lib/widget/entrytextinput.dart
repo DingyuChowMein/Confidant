@@ -10,7 +10,6 @@ class EntryTextInput extends StatelessWidget {
   Widget build(BuildContext context) {
     double fontSize = Theme.of(context).textTheme.body1.fontSize;
 
-    /// devicePixelRatio;
     num width;
     num height;
     return LayoutBuilder(
@@ -48,7 +47,7 @@ class EntryTextInputPainter extends CustomPainter {
   EntryTextInputPainter(
       this.height, this.width, this.fontSize);
 
-  double calcLineIncrementAmount() {
+  double _calcLineIncrementAmount() {
     TextSpan ts = TextSpan(text: 'a', style: TextStyle(fontSize: fontSize));
     TextPainter tp = TextPainter(
         text: ts, textAlign: TextAlign.left, textDirection: TextDirection.ltr)
@@ -62,7 +61,7 @@ class EntryTextInputPainter extends CustomPainter {
       ..strokeWidth = 1
       ..color = Colors.grey;
 
-    double lineIncrementAmount = calcLineIncrementAmount();
+    double lineIncrementAmount = _calcLineIncrementAmount();
 
     for (double h = EntryTextInput.INSET_AMOUNT; h < 1000; h += lineIncrementAmount) {
       canvas.drawLine(Offset(0, h), Offset(width, h), paint);

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:confidant/page/list.dart';
 import 'package:confidant/page/entrypage.dart';
-import 'package:confidant/database/scopebase.dart';
-
-// probalby maybe i guess ought to go in different place
-const num NUM_CHARS_IN_DATE = 10;
+import 'package:confidant/widget/scopebase.dart';
 
 void main() => runApp(Confidant());
 
