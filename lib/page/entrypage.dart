@@ -18,8 +18,6 @@ class EntryPage extends StatefulWidget {
 }
 
 class _EntryPageState extends State<EntryPage> {
-  //String nowString =
-  //    new DateTime.now().toIso8601String().substring(0, NUM_CHARS_IN_DATE);
   Entry entry;
 
   _EntryPageState(this.entry);
