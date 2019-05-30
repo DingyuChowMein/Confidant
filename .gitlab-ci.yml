@@ -1,26 +1,26 @@
-stages:
-    - build
-    - test
-    - deploy
+#stages:
+#    - build
+#    - test
+#    - deploy
     
 #dependencies:
 #    stage: build
 #    script: 
 #        - gem install fastlane
     
-build:
-    stage: build
-    script:
-        - flutter build apk --release
-        - flutter build ios --release --no-codesign
-        - cd android && fastlane init
-        - cd ../ios && fastlane init
+#build:
+#    stage: build
+#    script:
+#        - flutter build apk --release
+#        - flutter build ios --release --no-codesign
+#        - cd android && fastlane init
+#        - cd ../ios && fastlane init
     
-test:
-    stage: test
-    script:
+#test:
+#    stage: test
+#    script:
     
-deply:
-    stage: deploy
-    script:
+#deply:
+#    stage: deploy
+#    script:
     
