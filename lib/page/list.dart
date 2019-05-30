@@ -6,6 +6,7 @@ import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/authentication/login.dart';
 import 'package:confidant/authentication/auth.dart';
+import 'package:confidant/widget/emotiveface.dart';
 import 'dart:async';
 
 class ListPage extends StatefulWidget {
@@ -26,7 +27,8 @@ class _ListPageState extends State<ListPage> {
     return Scaffold(
       appBar: AppBar(
           /** TODO: DYNAMIC FACE; use setState() **/
-          leading: Icon(Icons.tag_faces),
+          //leading: Icon(Icons.tag_faces),
+          leading: EmotiveFace(15),
           title: const Text('Confidant'),
           actions: <Widget>[
             // action button
