@@ -48,7 +48,6 @@ class _RootPageState extends State<RootPage> {
     });
     setState(() {
       authStatus = AuthStatus.LOGGED_IN;
-
     });
   }
 
@@ -82,9 +81,7 @@ class _RootPageState extends State<RootPage> {
         break;
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
-          // TODO NEIL HELP PLZ, ON SUCCESS iM GENERATING A NEW LIST
-          // WITH RIGHT ID WHICH SEEMS TO TRIGGER ERROR.
-          return new ListPage(userId: _userId);
+          Navigator.pop(context,_userId);
         } else return _buildWaitingScreen();
         break;
       default:
