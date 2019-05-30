@@ -14,7 +14,6 @@ class ListPage extends StatefulWidget {
   ListPage({Key key, this.title}) : super(key: key);
   final String title;
 
-
   @override
   _ListPageState createState() => _ListPageState();
 }
@@ -23,8 +22,19 @@ class _ListPageState extends State<ListPage> {
   // ensures only one slidable can be open at a time
   final SlidableController slidableController = SlidableController();
   final String userId = "";
-  final FirebaseDatabase _database = FirebaseDatabase.instance;
-  Query _todoQuery;
+
+  FirebaseDatabase _fdb = FirebaseDatabase.instance;
+  Query _entryQuery;
+
+  signIn() async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => new RootPage(auth: new Auth())));
+    return result;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +48,19 @@ class _ListPageState extends State<ListPage> {
             // action button
             IconButton(
               icon: Icon(Icons.color_lens),
-              /** TODO: COLOUR PICKER STUFF**/
+              /**TODO: COLOUR PICKER STUFF**/
               onPressed: () {},
             ),
             // action button
             IconButton(
               icon: Icon(Icons.account_circle),
-              onPressed: () async {
-
-                final result = await Navigator.push(context,
-                MaterialPageRoute( builder: (context)
-                => new RootPage(auth: new Auth())));
-
+              onPressed: () {
+                signIn();
+                _entryQuery = _fdb
+                    .reference()
+                    .child("Users")
+                    .orderByChild("userID")
+                    .equalTo(userId);
               },
             ),
           ]),
@@ -66,12 +77,17 @@ class _ListPageState extends State<ListPage> {
                       child: Text('Add Entries Here Tbh',
                           style: TextStyle(fontSize: 32, color: Colors.black)),
                     );
+                  if(_entryQuery == null){
                   return ListView.builder(
-                    itemCount: snapshot.data?.length ?? 0,
-                    itemBuilder: (context, i) => EntryListItem(
-                        entry: snapshot.data[i],
-                        controller: slidableController),
-                  );
+                      itemCount: snapshot.data?.length ?? 0,
+                      itemBuilder: (context, i) => EntryListItem(
+                          entry: snapshot.data[i],
+                          controller: slidableController),
+                    );
+                  }else{
+
+                  }
+
                 }),
           ),
           // Divider(),
@@ -179,11 +195,11 @@ class EntryListItem extends StatelessWidget {
       ],
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: 'Share',
+          caption: 'Upload',
           color: Colors.blue,
           icon: Icons.share,
-          /** TODO: SHARE STUFF **/
-          onTap: () => {},
+          // UPLOADS ENTRY
+          onTap: () => { entry.upload() },
         ),
         IconSlideAction(
           caption: 'Stats',

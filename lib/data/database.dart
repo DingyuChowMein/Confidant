@@ -18,11 +18,16 @@ class EntriesDatabase {
   new EntriesDatabase._instance();
   Database _db;
 
+  List<Entry> fbEntries = new List();
+
   EntriesDatabase._instance();
 
   static EntriesDatabase get() {
     return entriesDatabase;
   }
+
+
+
 
   Future _init() async {
     Directory directory = await getApplicationDocumentsDirectory();
@@ -47,6 +52,10 @@ class EntriesDatabase {
             '$TABLE_NAME($DATETIME, $TITLE, $BODY)'
             ' VALUES(?, ?, ?)',
         [entry.dateTime, entry.title, entry.body]);
+  }
+
+  Future<int> uploadEntry(Entry entry){
+
   }
 
   Future<List<Entry>> getEntries() async {
@@ -74,6 +83,9 @@ class Entry {
   String title;
   String body;
   String dateTime;
+
+  FirebaseDatabase _fdb = FirebaseDatabase.instance;
+
 
   Entry({this.dateTime, this.title = "", this.body = ""
     , this.userId = ""});
@@ -107,6 +119,10 @@ class Entry {
     DateTime now = DateTime.now();
     dateTime ??= now.toIso8601String();
     EntriesDatabase.get().insertOrUpdateEntry(this);
+  }
+
+  void upload() async {
+    _fdb.reference().child("Users").push().set(this.toJson());
   }
 
   void delete() async {
