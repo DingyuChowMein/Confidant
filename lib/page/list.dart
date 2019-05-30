@@ -147,7 +147,6 @@ class EntryListItem extends StatelessWidget {
         },
         onDismissed: (actionType) {
           //if (actionType == SlideActionType.primary) {
-          //          // ...
         },
       ),
       controller: controller,
