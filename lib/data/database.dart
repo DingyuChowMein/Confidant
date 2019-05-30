@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -84,15 +84,24 @@ class Entry {
     body = map[BODY];
   }
 
-  //
-//  Entry.fromSnapshot(DataSnapshot snap){
-//    key = snap.key,
-//    userId = snap.value["userId"];
-//    dateTime = snap.value["dateTime"];
-//    title = snap.value["title"];
-//    body = snap.value["body"];
-//
-//  }
+
+  Entry.fromSnapshot(DataSnapshot snap){
+    key = snap.key;
+    userId = snap.value["userId"];
+    dateTime = snap.value["dateTime"];
+    title = snap.value["title"];
+    body = snap.value["body"];
+
+  }
+
+  toJson(){
+    return {
+      "dateTime" : dateTime,
+      "userId" : userId,
+      "title" : title,
+      "body" : body,
+    };
+  }
 
   void save() async {
     DateTime now = DateTime.now();

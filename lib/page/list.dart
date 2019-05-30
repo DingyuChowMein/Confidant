@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
@@ -11,21 +11,20 @@ import 'package:confidant/authentication/auth.dart';
 import 'dart:async';
 
 class ListPage extends StatefulWidget {
-  ListPage({Key key, this.title, this.userId}) : super(key: key);
+  ListPage({Key key, this.title}) : super(key: key);
   final String title;
-  final String userId;
 
 
   @override
-  _ListPageState createState() => _ListPageState(list: this);
+  _ListPageState createState() => _ListPageState();
 }
 
 class _ListPageState extends State<ListPage> {
   // ensures only one slidable can be open at a time
   final SlidableController slidableController = SlidableController();
-  final ListPage list ;
-
-  _ListPageState({this.list});
+  final String userId = "";
+  final FirebaseDatabase _database = FirebaseDatabase.instance;
+  Query _todoQuery;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +44,12 @@ class _ListPageState extends State<ListPage> {
             // action button
             IconButton(
               icon: Icon(Icons.account_circle),
-              onPressed: () {
+              onPressed: () async {
 
-                Navigator.push(context,
+                final result = await Navigator.push(context,
                 MaterialPageRoute( builder: (context)
                 => new RootPage(auth: new Auth())));
+
               },
             ),
           ]),
