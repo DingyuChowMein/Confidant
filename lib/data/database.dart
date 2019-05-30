@@ -15,7 +15,7 @@ const num NUM_CHARS_IN_DATE = 10;
 
 class EntriesDatabase {
   static final EntriesDatabase entriesDatabase =
-      new EntriesDatabase._instance();
+  new EntriesDatabase._instance();
   Database _db;
 
   EntriesDatabase._instance();
@@ -28,11 +28,11 @@ class EntriesDatabase {
     Directory directory = await getApplicationDocumentsDirectory();
     _db = await openDatabase(join(directory.path, "entries.db"), version: 1,
         onCreate: (Database db, int version) async {
-      await db.execute('''CREATE TABLE $TABLE_NAME ( 
+          await db.execute('''CREATE TABLE $TABLE_NAME ( 
           $DATETIME STRING PRIMARY KEY, 
           $TITLE TEXT NOT NULL,
           $BODY TEXT NOT NULL)''');
-    });
+        });
   }
 
   Future<Database> _getDb() async {
@@ -44,8 +44,8 @@ class EntriesDatabase {
     var db = await _getDb();
     return await db.rawInsert(
         'INSERT OR REPLACE INTO '
-        '$TABLE_NAME($DATETIME, $TITLE, $BODY)'
-        ' VALUES(?, ?, ?)',
+            '$TABLE_NAME($DATETIME, $TITLE, $BODY)'
+            ' VALUES(?, ?, ?)',
         [entry.dateTime, entry.title, entry.body]);
   }
 
@@ -67,17 +67,32 @@ class EntriesDatabase {
 }
 
 class Entry {
+
+  String key;
+  String userId;
+
   String title;
   String body;
   String dateTime;
 
-  Entry({this.dateTime, this.title = "", this.body = ""});
+  Entry({this.dateTime, this.title = "", this.body = ""
+    , this.userId = ""});
 
   Entry.fromMap(Map map) {
     dateTime = map[DATETIME];
     title = map[TITLE];
     body = map[BODY];
   }
+
+  //
+//  Entry.fromSnapshot(DataSnapshot snap){
+//    key = snap.key,
+//    userId = snap.value["userId"];
+//    dateTime = snap.value["dateTime"];
+//    title = snap.value["title"];
+//    body = snap.value["body"];
+//
+//  }
 
   void save() async {
     DateTime now = DateTime.now();

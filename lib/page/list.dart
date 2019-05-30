@@ -4,21 +4,28 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
+import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/authentication/login.dart';
+
 import 'package:confidant/authentication/auth.dart';
 import 'dart:async';
 
 class ListPage extends StatefulWidget {
-  ListPage({Key key, this.title}) : super(key: key);
+  ListPage({Key key, this.title, this.userId}) : super(key: key);
   final String title;
+  final String userId;
+
 
   @override
-  _ListPageState createState() => _ListPageState();
+  _ListPageState createState() => _ListPageState(list: this);
 }
 
 class _ListPageState extends State<ListPage> {
   // ensures only one slidable can be open at a time
   final SlidableController slidableController = SlidableController();
+  final ListPage list ;
+
+  _ListPageState({this.list});
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +45,12 @@ class _ListPageState extends State<ListPage> {
             // action button
             IconButton(
               icon: Icon(Icons.account_circle),
-              /** TODO: LOGIN STUFF**/
-              onPressed: () {   Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => new LoginSignUpPage(auth: new Auth()))); },
-                //LoginSignUpPage(auth: new Auth());
+              onPressed: () {
+
+                Navigator.push(context,
+                MaterialPageRoute( builder: (context)
+                => new RootPage(auth: new Auth())));
+              },
             ),
           ]),
       body: Container(

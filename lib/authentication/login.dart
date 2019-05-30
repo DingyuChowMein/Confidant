@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:confidant/authentication/auth.dart';
+import 'package:confidant/page/list.dart';
+
 
 class LoginSignUpPage extends StatefulWidget {
   LoginSignUpPage({this.auth, this.onSignedIn});
@@ -56,7 +58,6 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
         setState(() {
           _isLoading = false;
         });
-
         if (userId.length > 0 && userId != null && _formMode == FormMode.LOGIN) {
           widget.onSignedIn();
         }
