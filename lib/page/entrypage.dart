@@ -28,10 +28,11 @@ class _EntryPageState extends State<EntryPage> {
 
   void saveEntry() {
     // calls 'validate' on all widgets in current state
-    _formKey.currentState.validate();
-    // calls 'save' on all widgets in current state
-    _formKey.currentState.save();
-    entry.save();
+    if (_formKey.currentState.validate()) {
+      // calls 'save' on all widgets in current state
+      _formKey.currentState.save();
+      entry.save();
+    }
   }
 
   @override

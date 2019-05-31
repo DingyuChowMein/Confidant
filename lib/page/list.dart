@@ -4,11 +4,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
+import 'package:confidant/widget/emotiveface.dart';
 import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/authentication/login.dart';
-
 import 'package:confidant/authentication/auth.dart';
 import 'dart:async';
+import 'dart:math';
 
 class ListPage extends StatefulWidget {
   ListPage({Key key, this.title}) : super(key: key);
@@ -42,7 +43,7 @@ class _ListPageState extends State<ListPage> {
     return Scaffold(
       appBar: AppBar(
           /** TODO: DYNAMIC FACE; use setState() **/
-          leading: Icon(Icons.tag_faces),
+          leading: EmotiveFace(15),
           title: const Text('Confidant'),
           actions: <Widget>[
             // action button
@@ -188,6 +189,9 @@ class EntryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int mentalState = -15 + (new Random()).nextInt(30);
+    final Color bgColour = Color.fromARGB(255, (184 - mentalState * 3.5).round(), (133 + mentalState * 27.25).round(), 99 + mentalState);
+
     return Slidable(
       key: ValueKey(entry.dateTime),
       dismissal: SlidableDismissal(
@@ -208,13 +212,12 @@ class EntryListItem extends StatelessWidget {
       actionExtentRatio: 0.2,
       child: Container(
         /** TODO: DYNAMIC COLOUR **/
-        color: Colors.white,
+        color: bgColour,
         child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Colors.indigoAccent,
-            /** TODO: DYNAMIC FACE (and colours?)**/
-            child: Icon(Icons.tag_faces),
-            foregroundColor: Colors.white,
+          leading:  Container(
+              height: 40,
+              width: 40,
+              child: EmotiveFace(mentalState)
           ),
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
