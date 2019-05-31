@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
+import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/authentication/login.dart';
+
 import 'package:confidant/authentication/auth.dart';
-import 'package:confidant/widget/emotiveface.dart';
 import 'dart:async';
-import 'dart:math';
 
 class ListPage extends StatefulWidget {
   ListPage({Key key, this.title}) : super(key: key);
@@ -21,61 +21,117 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   // ensures only one slidable can be open at a time
   final SlidableController slidableController = SlidableController();
+  final String userId = "";
+
+  FirebaseDatabase _fdb = FirebaseDatabase.instance;
+  Query _entryQuery;
+
+  signIn() async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => new RootPage(auth: new Auth())));
+    return result;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     ScopeBaseWidget.of(context).bloc.refresh();
     return Scaffold(
       appBar: AppBar(
-        /** TODO: DYNAMIC FACE; use setState() **/
-        //leading: Icon(Icons.tag_faces),
-          leading: EmotiveFace(15),
+          /** TODO: DYNAMIC FACE; use setState() **/
+          leading: Icon(Icons.tag_faces),
           title: const Text('Confidant'),
           actions: <Widget>[
             // action button
             IconButton(
               icon: Icon(Icons.color_lens),
-              /** TODO: COLOUR PICKER STUFF**/
+              /**TODO: COLOUR PICKER STUFF**/
               onPressed: () {},
             ),
             // action button
             IconButton(
               icon: Icon(Icons.account_circle),
-              /** TODO: LOGIN STUFF**/
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                        new LoginSignUpPage(auth: new Auth())));
+                signIn();
+                _entryQuery = _fdb
+                    .reference()
+                    .child("Users")
+                    .orderByChild("userId")
+                    .equalTo(userId);
               },
-              //LoginSignUpPage(auth: new Auth());
             ),
           ]),
       body: Container(
           child: Column(
-            children: <Widget>[
-              Expanded(
-                child: StreamBuilder<List<Entry>>(
-                    stream: ScopeBaseWidget.of(context).bloc.listStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.data == null || snapshot.data.length == 0)
-                        return Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text('Add Entries Here Tbh',
-                              style: TextStyle(fontSize: 32, color: Colors.black)),
-                        );
-                      return ListView.builder(
-                        itemCount: snapshot.data?.length ?? 0,
-                        itemBuilder: (context, i) => EntryListItem(
-                            entry: snapshot.data[i],
-                            controller: slidableController),
-                      );
-                    }),
-              ),
-              // Divider(),
-            ],
-          )),
+        children: <Widget>[
+          Expanded(
+            child: StreamBuilder<List<Entry>>(
+                stream: ScopeBaseWidget.of(context).bloc.listStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data == null || snapshot.data.length == 0)
+                    return Container(
+                      padding: EdgeInsets.all(10),
+                      child: Text('Add Entries Here Tbh',
+                          style: TextStyle(fontSize: 32, color: Colors.black)),
+                    );
+
+                  return ListView.builder(
+                      itemCount: snapshot.data?.length ?? 0,
+                      itemBuilder: (context, i) => EntryListItem(
+                          entry: snapshot.data[i],
+                          controller: slidableController),
+                    );
+
+//                  else{
+//                    StreamBuilder(
+//                            stream: _entryQuery.onValue,
+//                            builder: (context, snap) {
+//                              if (snap.hasData
+//                                  && !snap.hasError
+//                                  && snap.data.snapshot.value != null) {
+//                                DataSnapshot snapshot = snap.data.snapshot;
+//                                List item = [];
+//                                List _list = [];
+//                                _list = snapshot.value;
+//                                _list.forEach((f) {
+//                                  if (f != null) {
+//                                    item.add(f);
+//                                  }
+//                                }
+//                                );
+//
+//                                return ListView.builder(
+//                                  itemCount: item.length,
+//                                  itemBuilder: (context, i) => EntryListItem(
+//                                      entry: item[i],
+//                                      controller: slidableController),
+////                                return snap.data.snapshot.value == null
+////                                    ? SizedBox()
+////                                    : ListView.builder(
+////                                  scrollDirection: Axis.horizontal,
+////                                  itemCount: item.length,
+////                                  itemBuilder: (context, index) {
+////                                    item[index];
+////                                  },
+//
+//
+//                                );
+//                              } else {
+//                                return Center(child: CircularProgressIndicator());
+//                            }
+//                           }
+//                           );
+//
+//                  }
+
+                }),
+          ),
+          // Divider(),
+        ],
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (context) => EntryPage.newEntry())),
@@ -132,9 +188,6 @@ class EntryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int mentalState = -15 + (new Random()).nextInt(30);
-    final Color bgColour = Color.fromARGB(255, (184 - mentalState * 3.5).round(), (133 + mentalState * 27.25).round(), 99 + mentalState);
-
     return Slidable(
       key: ValueKey(entry.dateTime),
       dismissal: SlidableDismissal(
@@ -147,6 +200,7 @@ class EntryListItem extends StatelessWidget {
         },
         onDismissed: (actionType) {
           //if (actionType == SlideActionType.primary) {
+          //          // ...
         },
       ),
       controller: controller,
@@ -154,12 +208,13 @@ class EntryListItem extends StatelessWidget {
       actionExtentRatio: 0.2,
       child: Container(
         /** TODO: DYNAMIC COLOUR **/
-        color: bgColour,
+        color: Colors.white,
         child: ListTile(
-          leading: Container(
-              height: 40,
-              width: 40,
-              child: EmotiveFace(mentalState)
+          leading: CircleAvatar(
+            backgroundColor: Colors.indigoAccent,
+            /** TODO: DYNAMIC FACE (and colours?)**/
+            child: Icon(Icons.tag_faces),
+            foregroundColor: Colors.white,
           ),
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
@@ -179,11 +234,13 @@ class EntryListItem extends StatelessWidget {
       ],
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: 'Share',
+          caption: 'Upload',
           color: Colors.blue,
           icon: Icons.share,
-          /** TODO: SHARE STUFF **/
-          onTap: () => {},
+          // UPLOADS ENTRY
+          onTap: () => {
+          entry.upload(),
+          },
         ),
         IconSlideAction(
           caption: 'Stats',

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:confidant/authentication/auth.dart';
+import 'package:confidant/page/list.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+
+
 
 class LoginSignUpPage extends StatefulWidget {
   LoginSignUpPage({this.auth, this.onSignedIn});
@@ -15,6 +20,7 @@ enum FormMode { LOGIN, SIGNUP }
 
 class _LoginSignUpPageState extends State<LoginSignUpPage> {
   final _formKey = new GlobalKey<FormState>();
+  FirebaseDatabase _database = FirebaseDatabase.instance;
 
   String _email;
   String _password;
@@ -52,11 +58,12 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           widget.auth.sendEmailVerification();
           _showVerifyEmailSentDialog();
           print('Signed up user: $userId');
+          // adds user by userId to Db.
+          _database.reference().child("Users").set(userId);
         }
         setState(() {
           _isLoading = false;
         });
-
         if (userId.length > 0 && userId != null && _formMode == FormMode.LOGIN) {
           widget.onSignedIn();
         }
