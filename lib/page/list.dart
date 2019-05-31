@@ -44,7 +44,7 @@ class _ListPageState extends State<ListPage> {
       appBar: AppBar(
           /** TODO: DYNAMIC FACE; use setState() **/
           leading: EmotiveFace(15),
-          title: const Text('Confidant'),
+          title: const Text('Confidant Journal'),
           actions: <Widget>[
             // action button
             IconButton(
