@@ -38,10 +38,6 @@ class _ListPageState extends State<ListPage> {
     return result;
   }
 
-  signOut() async {
-    final result
-  }
-
 
 
   @override
