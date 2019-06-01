@@ -12,8 +12,10 @@ class EntriesBLoC {
 
   static final EntriesBLoC _singleton = EntriesBLoC._create();
 
-  var _streamController = StreamController<String>();
-  var _listStreamController = StreamController<List<Entry>>();
+  var _streamController
+    = StreamController<String>();
+  var _listStreamController
+    = StreamController<List<Entry>>();
 
   Stream<List<Entry>> get listStream => _listStreamController.stream;
   Stream<String> get stream => _streamController.stream;

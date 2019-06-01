@@ -4,12 +4,12 @@ import 'package:confidant/authentication/login.dart';
 import 'package:confidant/authentication/auth.dart';
 
 class RootPage extends StatefulWidget {
-  RootPage({this.auth,this.list});
+  RootPage({this.auth});
 
   final BaseAuth auth;
-  ListPage list;
+
   @override
-  State<StatefulWidget> createState() => new _RootPageState(page : list );
+  State<StatefulWidget> createState() => new _RootPageState();
 }
 
 enum AuthStatus {
@@ -21,10 +21,8 @@ enum AuthStatus {
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = "";
-  ListPage page ;
 
-
-  _RootPageState({this.page});
+  _RootPageState({this.authStatus});
 
   @override
   void initState() {
@@ -34,8 +32,8 @@ class _RootPageState extends State<RootPage> {
         if (user != null) {
           _userId = user?.uid;
         }
-        authStatus =
-        user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+        authStatus = user?.uid
+            == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
       });
     });
   }

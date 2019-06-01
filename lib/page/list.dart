@@ -11,6 +11,8 @@ import 'package:confidant/authentication/auth.dart';
 import 'dart:async';
 import 'dart:math';
 
+
+
 class ListPage extends StatefulWidget {
   ListPage({Key key, this.title}) : super(key: key);
   final String title;
@@ -23,6 +25,7 @@ class _ListPageState extends State<ListPage> {
   // ensures only one slidable can be open at a time
   final SlidableController slidableController = SlidableController();
   final String userId = "";
+  bool LOGGED_IN = false;
 
   FirebaseDatabase _fdb = FirebaseDatabase.instance;
   Query _entryQuery;
@@ -33,6 +36,10 @@ class _ListPageState extends State<ListPage> {
         MaterialPageRoute(
             builder: (context) => new RootPage(auth: new Auth())));
     return result;
+  }
+
+  signOut() async {
+    final result
   }
 
 
@@ -56,12 +63,11 @@ class _ListPageState extends State<ListPage> {
             IconButton(
               icon: Icon(Icons.account_circle),
               onPressed: () {
+                if(!LOGGED_IN){
                 signIn();
-                _entryQuery = _fdb
-                    .reference()
-                    .child("Users")
-                    .orderByChild("userId")
-                    .equalTo(userId);
+                }else{
+                 signOut();
+                }
               },
             ),
           ]),

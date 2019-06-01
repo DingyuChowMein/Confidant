@@ -88,7 +88,7 @@ class Entry {
 
 
   Entry({this.dateTime, this.title = "", this.body = ""
-    , this.userId = ""});
+    , this.userId});
 
   Entry.fromMap(Map map) {
     dateTime = map[DATETIME];
