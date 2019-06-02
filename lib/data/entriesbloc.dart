@@ -6,7 +6,9 @@ class EntriesBLoC {
   List<Entry> entryList;
 
   void refresh() async {
-    var entryList = await EntriesDatabase.get().getEntries();
+    List<Entry> entryList = await EntriesDatabase.get().getEntries();
+    // sort it or else it comes out in a random order
+    //entryList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
     listSink.add(entryList);
   }
 

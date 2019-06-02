@@ -6,7 +6,7 @@ import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/widget/emotiveface.dart';
 import 'package:confidant/authentication/portal.dart';
-import 'package:confidant/authentication/login.dart';
+import 'package:confidant/authentication/signin.dart';
 import 'package:confidant/authentication/auth.dart';
 import 'dart:async';
 import 'dart:math';
@@ -22,20 +22,22 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   // ensures only one slidable can be open at a time
   final SlidableController slidableController = SlidableController();
-  final String userId = "";
+  String userId = "";
 
   FirebaseDatabase _fdb = FirebaseDatabase.instance;
   Query _entryQuery;
 
-  signIn() async {
-    final result = await Navigator.push(
+  void signInOrUp() async {
+    String tempUserId = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => new RootPage(auth: new Auth())));
-    return result;
+    // '#' means no change to username
+    // '.' means signed out
+    if (tempUserId != "#") {
+      userId = tempUserId;
+    }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,7 @@ class _ListPageState extends State<ListPage> {
       appBar: AppBar(
           /** TODO: DYNAMIC FACE; use setState() **/
           leading: EmotiveFace(15),
-          title: const Text('Confidant Journal'),
+          title: const Text('Confidant'),
           actions: <Widget>[
             // action button
             IconButton(
@@ -56,12 +58,7 @@ class _ListPageState extends State<ListPage> {
             IconButton(
               icon: Icon(Icons.account_circle),
               onPressed: () {
-                signIn();
-                _entryQuery = _fdb
-                    .reference()
-                    .child("Users")
-                    .orderByChild("userId")
-                    .equalTo(userId);
+                signInOrUp();
               },
             ),
           ]),
@@ -80,11 +77,12 @@ class _ListPageState extends State<ListPage> {
                     );
 
                   return ListView.builder(
-                      itemCount: snapshot.data?.length ?? 0,
-                      itemBuilder: (context, i) => EntryListItem(
-                          entry: snapshot.data[i],
-                          controller: slidableController),
-                    );
+                    itemCount: snapshot.data?.length ?? 0,
+                    itemBuilder: (context, i) => EntryListItem(
+                        entry: snapshot.data[i],
+                        userId: userId,
+                        controller: slidableController),
+                  );
 
 //                  else{
 //                    StreamBuilder(
@@ -127,7 +125,6 @@ class _ListPageState extends State<ListPage> {
 //                           );
 //
 //                  }
-
                 }),
           ),
           // Divider(),
@@ -154,9 +151,11 @@ class _ListPageState extends State<ListPage> {
 
 class EntryListItem extends StatelessWidget {
   final Entry entry;
+  final String userId;
   final SlidableController controller;
 
-  const EntryListItem({Key key, this.entry, @required this.controller})
+  const EntryListItem(
+      {Key key, this.entry, this.userId, @required this.controller})
       : super(key: key);
 
   FutureOr<bool> _verifyDeletionIntention(context) {
@@ -190,7 +189,11 @@ class EntryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int mentalState = -15 + (new Random()).nextInt(30);
-    final Color bgColour = Color.fromARGB(255, (184 - mentalState * 3.5).round(), (133 + mentalState * 27.25).round(), 99 + mentalState);
+    final Color bgColour = Color.fromARGB(
+        255,
+        (184 - mentalState * 3.5).round(),
+        (133 + mentalState * 27.25).round(),
+        99 + mentalState);
 
     return Slidable(
       key: ValueKey(entry.dateTime),
@@ -214,12 +217,10 @@ class EntryListItem extends StatelessWidget {
         /** TODO: DYNAMIC COLOUR **/
         color: bgColour,
         child: ListTile(
-          leading:  Container(
-              height: 40,
-              width: 40,
-              child: EmotiveFace(mentalState)
-          ),
+          leading:
+              Container(height: 40, width: 40, child: EmotiveFace(mentalState)),
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
+          //title: Text(userId == null ? entry.title : userId, style: Theme.of(context).textTheme.body2), debug helping thing
           subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),
           onTap: () => Navigator.push(context,
@@ -241,8 +242,8 @@ class EntryListItem extends StatelessWidget {
           color: Colors.blue,
           icon: Icons.share,
           // UPLOADS ENTRY
-          onTap: () => {
-          entry.upload(),
+          onTap: () {
+            entry.upload(userId);
           },
         ),
         IconSlideAction(

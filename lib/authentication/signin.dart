@@ -4,8 +4,6 @@ import 'package:confidant/page/list.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 
-
-
 class LoginSignUpPage extends StatefulWidget {
   LoginSignUpPage({this.auth, this.onSignedIn});
 
@@ -59,13 +57,14 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           _showVerifyEmailSentDialog();
           print('Signed up user: $userId');
           // adds user by userId to Db.
-          _database.reference().child("Users").set(userId);
+          _database.reference().child("Users").set(userId);//todo: maybe remove??????
         }
         setState(() {
           _isLoading = false;
         });
         if (userId.length > 0 && userId != null && _formMode == FormMode.LOGIN) {
           widget.onSignedIn();
+          Navigator.pop(context, userId);
         }
 
       } catch (e) {

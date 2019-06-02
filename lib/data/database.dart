@@ -15,7 +15,7 @@ const num NUM_CHARS_IN_DATE = 10;
 
 class EntriesDatabase {
   static final EntriesDatabase entriesDatabase =
-  new EntriesDatabase._instance();
+      new EntriesDatabase._instance();
   Database _db;
 
   List<Entry> fbEntries = new List();
@@ -26,18 +26,15 @@ class EntriesDatabase {
     return entriesDatabase;
   }
 
-
-
-
   Future _init() async {
     Directory directory = await getApplicationDocumentsDirectory();
     _db = await openDatabase(join(directory.path, "entries.db"), version: 1,
         onCreate: (Database db, int version) async {
-          await db.execute('''CREATE TABLE $TABLE_NAME ( 
+      await db.execute('''CREATE TABLE $TABLE_NAME ( 
           $DATETIME STRING PRIMARY KEY, 
           $TITLE TEXT NOT NULL,
           $BODY TEXT NOT NULL)''');
-        });
+    });
   }
 
   Future<Database> _getDb() async {
@@ -49,18 +46,14 @@ class EntriesDatabase {
     var db = await _getDb();
     return await db.rawInsert(
         'INSERT OR REPLACE INTO '
-            '$TABLE_NAME($DATETIME, $TITLE, $BODY)'
-            ' VALUES(?, ?, ?)',
+        '$TABLE_NAME($DATETIME, $TITLE, $BODY)'
+        ' VALUES(?, ?, ?)',
         [entry.dateTime, entry.title, entry.body]);
-  }
-
-  Future<int> uploadEntry(Entry entry){
-
   }
 
   Future<List<Entry>> getEntries() async {
     var db = await _getDb();
-    List<Map> entities = await db.rawQuery("select * from $TABLE_NAME");
+    List<Map> entities = await db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $DATETIME");
     return entities.map((map) => new Entry.fromMap(map)).toList();
   }
 
@@ -76,7 +69,6 @@ class EntriesDatabase {
 }
 
 class Entry {
-
   String key;
   String userId;
 
@@ -86,9 +78,7 @@ class Entry {
 
   FirebaseDatabase _fdb = FirebaseDatabase.instance;
 
-
-  Entry({this.dateTime, this.title = "", this.body = ""
-    , this.userId = ""});
+  Entry({this.dateTime, this.title = "", this.body = "", this.userId = ""});
 
   Entry.fromMap(Map map) {
     dateTime = map[DATETIME];
@@ -96,22 +86,18 @@ class Entry {
     body = map[BODY];
   }
 
-
-  Entry.fromSnapshot(DataSnapshot snap){
+  Entry.fromSnapshot(DataSnapshot snap) {
     key = snap.key;
     userId = snap.value["userId"];
     dateTime = snap.value["dateTime"];
     title = snap.value["title"];
     body = snap.value["body"];
-
   }
 
-  toJson(){
+  Map<String, String> toJson() {
     return {
-      "dateTime" : dateTime,
-      "userId" : userId,
-      "title" : title,
-      "body" : body,
+      "title": title,
+      "body": body,
     };
   }
 
@@ -121,12 +107,17 @@ class Entry {
     EntriesDatabase.get().insertOrUpdateEntry(this);
   }
 
-  void upload() async {
-    _fdb.reference().child("Entries").push().set(this.toJson());
+  void upload(String userId) async {
+    if (userId == ".") {
+      print("can't upload, not signed in"); // todo: take to sign in page
+      return;
+    }
+
+    String dateTimeSansIllegalChars = dateTime.replaceAll('.', '*');
+    _fdb.reference().child(userId).child(dateTimeSansIllegalChars).set(toJson());
   }
 
   void delete() async {
     EntriesDatabase.get().deleteEntry(dateTime);
   }
-
 }

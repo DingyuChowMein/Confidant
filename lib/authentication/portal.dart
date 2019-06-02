@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:confidant/page/list.dart';
-import 'package:confidant/authentication/login.dart';
+import 'package:confidant/authentication/signin.dart';
+import 'package:confidant/authentication/signout.dart';
 import 'package:confidant/authentication/auth.dart';
 
 class RootPage extends StatefulWidget {
-  RootPage({this.auth,this.list});
+  RootPage({this.auth, this.list});
 
   final BaseAuth auth;
   ListPage list;
+
   @override
-  State<StatefulWidget> createState() => new _RootPageState(page : list );
+  State<StatefulWidget> createState() =>
+      new _RootPageState(auth: auth);
 }
 
 enum AuthStatus {
@@ -20,11 +23,10 @@ enum AuthStatus {
 
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
-  String _userId = "";
-  ListPage page ;
+  String _userId = "#";
+  BaseAuth auth;
 
-
-  _RootPageState({this.page});
+  _RootPageState({this.auth});
 
   @override
   void initState() {
@@ -35,27 +37,17 @@ class _RootPageState extends State<RootPage> {
           _userId = user?.uid;
         }
         authStatus =
-        user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+            user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
       });
     });
   }
 
-  void _onLoggedIn() {
-    widget.auth.getCurrentUser().then((user){
-      setState(() {
-        _userId = user.uid.toString();
-      });
-    });
-    setState(() {
-      authStatus = AuthStatus.LOGGED_IN;
-    });
+  void _onSignedIn() {
+    // todo: display login successful toast or something
   }
 
   void _onSignedOut() {
-    setState(() {
-      authStatus = AuthStatus.NOT_LOGGED_IN;
-      _userId = "";
-    });
+    Navigator.pop(context, ".");
   }
 
   Widget _buildWaitingScreen() {
@@ -76,13 +68,14 @@ class _RootPageState extends State<RootPage> {
       case AuthStatus.NOT_LOGGED_IN:
         return new LoginSignUpPage(
           auth: widget.auth,
-          onSignedIn: _onLoggedIn,
+          onSignedIn: _onSignedIn,
         );
         break;
       case AuthStatus.LOGGED_IN:
-        if (_userId.length > 0 && _userId != null) {
-          Navigator.pop(context,_userId);
-        } else return _buildWaitingScreen();
+        return new SignoutPage(
+          auth: widget.auth,
+          onSignedOut: _onSignedOut,
+        );
         break;
       default:
         return _buildWaitingScreen();
