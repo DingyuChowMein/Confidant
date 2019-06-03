@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
@@ -14,33 +15,46 @@ import 'dart:math';
 class ListPage extends StatefulWidget {
   ListPage({Key key, this.title}) : super(key: key);
   final String title;
+  final Auth auth = new Auth();
 
   @override
-  _ListPageState createState() => _ListPageState();
+  _ListPageState createState() => _ListPageState(auth);
 }
 
 class _ListPageState extends State<ListPage> {
   // ensures only one slidable can be open at a time
   final SlidableController slidableController = SlidableController();
-  String userId = "";
+  String userId = LOGGED_OUT_POP;
+  final Auth auth;
+
+  _ListPageState(this.auth);
 
   FirebaseDatabase _fdb = FirebaseDatabase.instance;
-  Query _entryQuery;
 
   void signInOrUp() async {
-    String tempUserId = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => new RootPage(auth: new Auth())));
+    String tempUserId = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => new RootPage(auth: auth)));
     // '#' means no change to username
     // '.' means signed out
-    if (tempUserId != "#") {
+    if (tempUserId != UNCHANGED_LOGIN_POP) {
       userId = tempUserId;
+      print("updated userId to " + tempUserId);
     }
+  }
+
+  void getCurrentUser() {
+    userId = LOGGED_OUT_POP;
+    auth.getCurrentUser().then((user) {
+      if (user != null) {
+        userId = user?.uid;
+        print("user logged in as: " + userId);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    getCurrentUser();
     ScopeBaseWidget.of(context).bloc.refresh();
     return Scaffold(
       appBar: AppBar(
@@ -163,7 +177,7 @@ class EntryListItem extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          //title: Text('Delete'),
+          title: Text('Delete', style: Theme.of(context).textTheme.body2),
           content: Text('Are you sure you\'d like to delete this entry?'),
           actions: <Widget>[
             FlatButton(

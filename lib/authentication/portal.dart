@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:confidant/page/list.dart';
 import 'package:confidant/authentication/signin.dart';
-import 'package:confidant/authentication/signout.dart';
+import 'package:confidant/authentication/signoutoronlineentrylist.dart';
 import 'package:confidant/authentication/auth.dart';
+
+const String UNCHANGED_LOGIN_POP = "#";
+const String LOGGED_OUT_POP = ".";
 
 class RootPage extends StatefulWidget {
   RootPage({this.auth, this.list});
@@ -23,7 +26,7 @@ enum AuthStatus {
 
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
-  String _userId = "#";
+  String _userId = UNCHANGED_LOGIN_POP;
   BaseAuth auth;
 
   _RootPageState({this.auth});
@@ -43,11 +46,13 @@ class _RootPageState extends State<RootPage> {
   }
 
   void _onSignedIn() {
+    //authStatus = AuthStatus.LOGGED_IN;
     // todo: display login successful toast or something
   }
 
   void _onSignedOut() {
-    Navigator.pop(context, ".");
+    //authStatus = AuthStatus.NOT_LOGGED_IN;
+    Navigator.pop(context, LOGGED_OUT_POP);
   }
 
   Widget _buildWaitingScreen() {
@@ -75,6 +80,7 @@ class _RootPageState extends State<RootPage> {
         return new SignoutPage(
           auth: widget.auth,
           onSignedOut: _onSignedOut,
+          uid: _userId
         );
         break;
       default:

@@ -87,6 +87,7 @@ class _EntryPageState extends State<EntryPage> {
                               textCapitalization: TextCapitalization.sentences,
                               style: Theme.of(context).textTheme.title,
                               decoration: InputDecoration(border: InputBorder.none),
+                              autofocus: true,
                             )),
                       )
                     ]),

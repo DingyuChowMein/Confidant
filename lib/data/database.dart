@@ -5,6 +5,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:confidant/authentication/portal.dart';
+
 const String TABLE_NAME = "entries";
 const String ID = "id";
 const String TITLE = "title";
@@ -53,7 +55,8 @@ class EntriesDatabase {
 
   Future<List<Entry>> getEntries() async {
     var db = await _getDb();
-    List<Map> entities = await db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $DATETIME");
+    List<Map> entities =
+        await db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $DATETIME");
     return entities.map((map) => new Entry.fromMap(map)).toList();
   }
 
@@ -87,11 +90,9 @@ class Entry {
   }
 
   Entry.fromSnapshot(DataSnapshot snap) {
-    key = snap.key;
-    userId = snap.value["userId"];
-    dateTime = snap.value["dateTime"];
-    title = snap.value["title"];
-    body = snap.value["body"];
+    dateTime = snap.key;
+    title = snap.value['title'];
+    body = snap.value['body'];
   }
 
   Map<String, String> toJson() {
@@ -103,18 +104,17 @@ class Entry {
 
   void save() async {
     DateTime now = DateTime.now();
-    dateTime ??= now.toIso8601String();
+    dateTime ??= now.toIso8601String().replaceAll('.', '*');
     EntriesDatabase.get().insertOrUpdateEntry(this);
   }
 
   void upload(String userId) async {
-    if (userId == ".") {
+    if (userId == LOGGED_OUT_POP) {
       print("can't upload, not signed in"); // todo: take to sign in page
       return;
     }
-
-    String dateTimeSansIllegalChars = dateTime.replaceAll('.', '*');
-    _fdb.reference().child(userId).child(dateTimeSansIllegalChars).set(toJson());
+    print("trying to upload this dateTime: " + dateTime);
+    _fdb.reference().child(userId).child(dateTime).set(toJson());
   }
 
   void delete() async {

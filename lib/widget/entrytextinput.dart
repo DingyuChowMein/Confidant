@@ -63,7 +63,7 @@ class EntryTextInputPainter extends CustomPainter {
 
     double lineIncrementAmount = _calcLineIncrementAmount();
 
-    for (double h = EntryTextInput.INSET_AMOUNT; h < 1000; h += lineIncrementAmount) {
+    for (double h = EntryTextInput.INSET_AMOUNT; h < 10000; h += lineIncrementAmount) {
       canvas.drawLine(Offset(0, h), Offset(width, h), paint);
     }
   }
