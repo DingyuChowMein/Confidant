@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:confidant/authentication/auth.dart';
-import 'package:confidant/page/list.dart';
+import 'package:confidant/page/listpage.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 

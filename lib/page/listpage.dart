@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:confidant/page/entrypage.dart';
+import 'package:confidant/page/pinpage.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/widget/emotiveface.dart';
 import 'package:confidant/authentication/portal.dart';
-import 'package:confidant/authentication/signin.dart';
 import 'package:confidant/authentication/auth.dart';
 import 'package:share/share.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:math';
 
+
 class ListPage extends StatefulWidget {
-  ListPage({Key key, this.title}) : super(key: key);
-  final String title;
+  ListPage({Key key}) : super(key: key);
   final Auth auth = new Auth();
 
   @override
@@ -37,10 +37,20 @@ class _ListPageState extends State<ListPage> {
         MaterialPageRoute(builder: (context) => new RootPage(auth: auth)));
     // '#' means no change to username
     // '.' means signed out
-    if (tempUserId != UNCHANGED_LOGIN_POP) {
+    if (tempUserId != UNCHANGED_LOGIN_POP && tempUserId != null) {
       userId = tempUserId;
       print("updated userId to " + tempUserId);
     }
+  }
+
+  void _setPin() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => new PinPage()));
+  }
+
+  Future<String> _getPin() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(ENTRY_PIN_PREF);
   }
 
   void _getCurrentUser() {
@@ -70,7 +80,7 @@ class _ListPageState extends State<ListPage> {
             ),
             IconButton(
               icon: Icon(Icons.vpn_key),
-              onPressed: () {},
+              onPressed: _setPin,
             ),
             IconButton(
               icon: Icon(Icons.cloud),

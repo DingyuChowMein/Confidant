@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:confidant/page/list.dart';
+import 'package:confidant/page/listpage.dart';
 import 'package:confidant/page/entrypage.dart';
 import 'package:confidant/widget/entrytextinput.dart';
 
