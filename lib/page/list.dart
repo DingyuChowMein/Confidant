@@ -32,7 +32,7 @@ class _ListPageState extends State<ListPage> {
 
   FirebaseDatabase _fdb = FirebaseDatabase.instance;
 
-  void signInOrUp() async {
+  void _signInOrUp() async {
     String tempUserId = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => new RootPage(auth: auth)));
     // '#' means no change to username
@@ -43,7 +43,7 @@ class _ListPageState extends State<ListPage> {
     }
   }
 
-  void getCurrentUser() {
+  void _getCurrentUser() {
     userId = LOGGED_OUT_POP;
     auth.getCurrentUser().then((user) {
       if (user != null) {
@@ -55,7 +55,7 @@ class _ListPageState extends State<ListPage> {
 
   @override
   Widget build(BuildContext context) {
-    getCurrentUser();
+    _getCurrentUser();
     ScopeBaseWidget.of(context).bloc.refresh();
     return Scaffold(
       appBar: AppBar(
@@ -63,18 +63,18 @@ class _ListPageState extends State<ListPage> {
           leading: EmotiveFace(15),
           title: const Text('Confidant'),
           actions: <Widget>[
-            // action button
             IconButton(
               icon: Icon(Icons.color_lens),
               /**TODO: COLOUR PICKER STUFF**/
               onPressed: () {},
             ),
-            // action button
+            IconButton(
+              icon: Icon(Icons.vpn_key),
+              onPressed: () {},
+            ),
             IconButton(
               icon: Icon(Icons.cloud),
-              onPressed: () {
-                signInOrUp();
-              },
+              onPressed: _signInOrUp
             ),
           ]),
       body: Container(
