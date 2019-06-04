@@ -34,8 +34,9 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "webapps.confidant"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -54,11 +55,21 @@ flutter {
     source '../..'
 }
 
+repositories {
+    maven {
+        url  "https://dl.bintray.com/ibm-cloud-sdks/ibm-cloud-sdk-repo"
+    }
+}
+
 dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.firebase:firebase-database:17.0.0'
+//    compile 'com.android.support:appcompat-v7:26.0.0'
+//    compile 'com.android.support:multidex:1.0.1'
+//    compile 'com.ibm.watson:ibm-watson:7.0.0'
+   // compile(name:'library-release', ext:'aar')
 }
 
 apply plugin: 'com.google.gms.google-services'  // Google Play services Gradle plugin
