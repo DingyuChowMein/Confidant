@@ -9,6 +9,7 @@ import 'package:confidant/widget/emotiveface.dart';
 import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/authentication/signin.dart';
 import 'package:confidant/authentication/auth.dart';
+import 'package:share/share.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -70,7 +71,7 @@ class _ListPageState extends State<ListPage> {
             ),
             // action button
             IconButton(
-              icon: Icon(Icons.account_circle),
+              icon: Icon(Icons.cloud),
               onPressed: () {
                 signInOrUp();
               },
@@ -89,7 +90,6 @@ class _ListPageState extends State<ListPage> {
                       child: Text('Add Entries Here Tbh',
                           style: TextStyle(fontSize: 32, color: Colors.black)),
                     );
-
                   return ListView.builder(
                     itemCount: snapshot.data?.length ?? 0,
                     itemBuilder: (context, i) => EntryListItem(
@@ -97,48 +97,6 @@ class _ListPageState extends State<ListPage> {
                         userId: userId,
                         controller: slidableController),
                   );
-
-//                  else{
-//                    StreamBuilder(
-//                            stream: _entryQuery.onValue,
-//                            builder: (context, snap) {
-//                              if (snap.hasData
-//                                  && !snap.hasError
-//                                  && snap.data.snapshot.value != null) {
-//                                DataSnapshot snapshot = snap.data.snapshot;
-//                                List item = [];
-//                                List _list = [];
-//                                _list = snapshot.value;
-//                                _list.forEach((f) {
-//                                  if (f != null) {
-//                                    item.add(f);
-//                                  }
-//                                }
-//                                );
-//
-//                                return ListView.builder(
-//                                  itemCount: item.length,
-//                                  itemBuilder: (context, i) => EntryListItem(
-//                                      entry: item[i],
-//                                      controller: slidableController),
-////                                return snap.data.snapshot.value == null
-////                                    ? SizedBox()
-////                                    : ListView.builder(
-////                                  scrollDirection: Axis.horizontal,
-////                                  itemCount: item.length,
-////                                  itemBuilder: (context, index) {
-////                                    item[index];
-////                                  },
-//
-//
-//                                );
-//                              } else {
-//                                return Center(child: CircularProgressIndicator());
-//                            }
-//                           }
-//                           );
-//
-//                  }
                 }),
           ),
           // Divider(),
@@ -254,10 +212,19 @@ class EntryListItem extends StatelessWidget {
         IconSlideAction(
           caption: 'Upload',
           color: Colors.blue,
-          icon: Icons.share,
+          icon: Icons.cloud_upload,
           // UPLOADS ENTRY
           onTap: () {
             entry.upload(userId);
+          },
+        ),
+        IconSlideAction(
+          caption: 'Share',
+          color: Colors.lightGreen,
+          icon: Icons.share,
+          // SHARES ENTRY
+          onTap: () {
+            Share.share(entry.body);
           },
         ),
         IconSlideAction(
