@@ -107,19 +107,31 @@ class _SignoutPageState extends State<SignoutPage> {
     );
   }
 
+  Color _getEmotionColour(int mentalState, bool pinProtected) {
+    if (pinProtected) {
+      return Colors.white;
+    }
+    return Color.fromARGB(255, (184 - mentalState * 3.5).round(),
+        (133 + mentalState * 27.25).round(), 99 + mentalState);
+  }
+
+
   void _downloadEntry(DataSnapshot snapshot) {
     Entry e = Entry.fromSnapshot(snapshot);
     EntriesDatabase.get().insertOrUpdateEntry(e);
   }
 
-  void _previewEntry(String title, String body) {
+  void _previewEntry(String title, String body, bool pinProtected) {
+    const String pinTitle = "Preview Unavailable";
+    const String pinBody = "Entry is PIN protected.";
+
     showDialog(
       context: context,
       builder: (BuildContext buildContext) {
         return AlertDialog(
-          title: Text(title, style: Theme.of(context).textTheme.body2),
+          title: Text(pinProtected ? pinTitle : title, style: Theme.of(context).textTheme.body2),
           content: SingleChildScrollView(
-              child: Text(body),
+              child: Text(pinProtected ? pinBody : body),
           ),
           actions: <Widget>[
             FlatButton(
@@ -136,15 +148,13 @@ class _SignoutPageState extends State<SignoutPage> {
 
   Widget _buildItem(BuildContext context, DataSnapshot snapshot,
       Animation<double> animation, int index, SlidableController controller) {
-    final int mentalState = -15 + (new Random()).nextInt(30);
-    final Color bgColour = Color.fromARGB(
-        255,
-        (184 - mentalState * 3.5).round(),
-        (133 + mentalState * 27.25).round(),
-        99 + mentalState);
     String title = snapshot.value['title'];
     String body = snapshot.value['body'];
+    bool pinProtected = snapshot.value['pin_protected'];
     String dateTime = snapshot.key;
+
+    final int mentalState = -15 + (new Random()).nextInt(30);
+    Color bgColour = _getEmotionColour(mentalState, pinProtected);
 
     return Slidable(
       key: ValueKey(dateTime),
@@ -168,7 +178,12 @@ class _SignoutPageState extends State<SignoutPage> {
         color: bgColour,
         child: ListTile(
           leading:
-              Container(height: 40, width: 40, child: EmotiveFace(mentalState)),
+              Container(
+                  height: 40,
+                  width: 40,
+                  child: pinProtected
+                      ? Icon(Icons.lock)
+                      : EmotiveFace(mentalState)),
           title: Text(title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),
@@ -195,7 +210,7 @@ class _SignoutPageState extends State<SignoutPage> {
           color: Colors.amber,
           icon: Icons.pageview,
           /** TODO: STATS STUFF **/
-          onTap: () => _previewEntry(title, body),
+          onTap: () => _previewEntry(title, body, pinProtected),
         ),
         IconSlideAction(
           caption: 'Stats',

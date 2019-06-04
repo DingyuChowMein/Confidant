@@ -86,7 +86,8 @@ class _EntryPageState extends State<EntryPage> {
                                   s.length > 2 ? null : 'Give it a title',
                               textCapitalization: TextCapitalization.sentences,
                               style: Theme.of(context).textTheme.title,
-                              decoration: InputDecoration(border: InputBorder.none),
+                              decoration:
+                                  InputDecoration(border: InputBorder.none),
                               autofocus: true,
                             )),
                       )
@@ -133,6 +134,14 @@ class _EntryPageState extends State<EntryPage> {
                         ],
                       ),
                     ),
+                    IconButton(
+                        icon: Icon(
+                            entry.pinProtected ? Icons.lock : Icons.lock_open),
+                        onPressed: () {
+                          setState(() {
+                            entry.pinProtected = !entry.pinProtected;
+                          });
+                        })
                   ],
                 ),
               ),

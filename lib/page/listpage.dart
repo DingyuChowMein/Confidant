@@ -10,9 +10,9 @@ import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/authentication/auth.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pin_code_text_field/pin_code_text_field.dart';
 import 'dart:async';
 import 'dart:math';
-
 
 class ListPage extends StatefulWidget {
   ListPage({Key key}) : super(key: key);
@@ -31,6 +31,11 @@ class _ListPageState extends State<ListPage> {
   _ListPageState(this.auth);
 
   FirebaseDatabase _fdb = FirebaseDatabase.instance;
+  SharedPreferences prefs;
+
+  void _getPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   void _signInOrUp() async {
     String tempUserId = await Navigator.push(context,
@@ -44,13 +49,8 @@ class _ListPageState extends State<ListPage> {
   }
 
   void _setPin() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => new PinPage()));
-  }
-
-  Future<String> _getPin() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(ENTRY_PIN_PREF);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => new PinPage()));
   }
 
   void _getCurrentUser() {
@@ -61,6 +61,12 @@ class _ListPageState extends State<ListPage> {
         print("user logged in as: " + userId);
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getPrefs();
   }
 
   @override
@@ -82,10 +88,7 @@ class _ListPageState extends State<ListPage> {
               icon: Icon(Icons.vpn_key),
               onPressed: _setPin,
             ),
-            IconButton(
-              icon: Icon(Icons.cloud),
-              onPressed: _signInOrUp
-            ),
+            IconButton(icon: Icon(Icons.cloud), onPressed: _signInOrUp),
           ]),
       body: Container(
           child: Column(
@@ -103,9 +106,11 @@ class _ListPageState extends State<ListPage> {
                   return ListView.builder(
                     itemCount: snapshot.data?.length ?? 0,
                     itemBuilder: (context, i) => EntryListItem(
-                        entry: snapshot.data[i],
-                        userId: userId,
-                        controller: slidableController),
+                          entry: snapshot.data[i],
+                          userId: userId,
+                          controller: slidableController,
+                          prefs: prefs,
+                        ),
                   );
                 }),
           ),
@@ -135,10 +140,41 @@ class EntryListItem extends StatelessWidget {
   final Entry entry;
   final String userId;
   final SlidableController controller;
+  final SharedPreferences prefs;
 
   const EntryListItem(
-      {Key key, this.entry, this.userId, @required this.controller})
+      {Key key, this.entry, this.userId, this.controller, this.prefs})
       : super(key: key);
+
+  String _getCorrectPin() {
+    print("getting correct pin");
+    String s = prefs.getString(ENTRY_PIN_PREF);
+    print(s);
+    return s;
+  }
+
+  Future<bool> _checkPinDialog(context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Locked Entry: Enter PIN to Continue',
+              style: Theme.of(context).textTheme.body2),
+          content: Padding(
+            padding: const EdgeInsets.all(0),
+            child: Center(
+                child: PinCodeTextField(
+                    pinBoxWidth: 40,
+                    pinBoxHeight: 40,
+                    autofocus: true,
+                    onDone: (String pinInput) {
+                      Navigator.of(context).pop(pinInput == _getCorrectPin());
+                    })),
+          ),
+        );
+      },
+    );
+  }
 
   FutureOr<bool> _verifyDeletionIntention(context) {
     return showDialog<bool>(
@@ -168,14 +204,57 @@ class EntryListItem extends StatelessWidget {
     );
   }
 
+  void _uploadEntry() {
+    entry.upload(userId);
+  }
+
+  void _shareEntry() {
+    Share.share(entry.body);
+  }
+
+  void _openEntry(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => EntryPage(entry)));
+  }
+
+  void _checkPin(BuildContext context, Function doAction) {
+    if (entry.pinProtected) {
+      _checkPinDialog(context).then((pinCorrect) {
+        if (pinCorrect != null && pinCorrect) {
+          doAction();
+        }
+      });
+    } else {
+      doAction();
+    }
+  }
+
+  void _checkPinWithContext(
+      BuildContext context, Function(BuildContext) doAction) {
+    if (entry.pinProtected) {
+      _checkPinDialog(context).then((pinCorrect) {
+        if (pinCorrect != null && pinCorrect) {
+          doAction(context);
+        }
+      });
+    } else {
+      doAction(context);
+    }
+  }
+
+  Color _getEmotionColour(int mentalState) {
+    if (entry.pinProtected) {
+      return Colors.white;
+    }
+    return Color.fromARGB(255, (184 - mentalState * 3.5).round(),
+        (133 + mentalState * 27.25).round(), 99 + mentalState);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final int mentalState = -15 + (new Random()).nextInt(30);
-    final Color bgColour = Color.fromARGB(
-        255,
-        (184 - mentalState * 3.5).round(),
-        (133 + mentalState * 27.25).round(),
-        99 + mentalState);
+    int mentalState = -15 + (new Random()).nextInt(30);
+
+    Color bgColour = _getEmotionColour(mentalState);
 
     return Slidable(
       key: ValueKey(entry.dateTime),
@@ -185,7 +264,14 @@ class EntryListItem extends StatelessWidget {
         },
         child: SlidableDrawerDismissal(),
         onWillDismiss: (actionType) {
-          return _verifyDeletionIntention(context);
+          if (entry.pinProtected) {
+            _checkPinDialog(context).then((pinCorrect) {
+              if (pinCorrect != null && pinCorrect)
+                return _verifyDeletionIntention(context);
+            });
+          } else {
+            return _verifyDeletionIntention(context);
+          }
         },
         onDismissed: (actionType) {
           //if (actionType == SlideActionType.primary) {
@@ -199,14 +285,16 @@ class EntryListItem extends StatelessWidget {
         /** TODO: DYNAMIC COLOUR **/
         color: bgColour,
         child: ListTile(
-          leading:
-              Container(height: 40, width: 40, child: EmotiveFace(mentalState)),
+          leading: Container(
+              height: 40,
+              width: 40,
+              child: entry.pinProtected
+                  ? Icon(Icons.lock)
+                  : EmotiveFace(mentalState)),
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
-          //title: Text(userId == null ? entry.title : userId, style: Theme.of(context).textTheme.body2), debug helping thing
           subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),
-          onTap: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => EntryPage(entry))),
+          onTap: () => _checkPinWithContext(context, _openEntry),
         ),
       ),
       actions: <Widget>[
@@ -214,29 +302,22 @@ class EntryListItem extends StatelessWidget {
             caption: 'Delete',
             color: Colors.red,
             icon: Icons.delete,
-            onTap: () {
-              _verifyDeletionIntention(context);
-            })
+            onTap: () =>
+                _checkPinWithContext(context, _verifyDeletionIntention))
       ],
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: 'Upload',
-          color: Colors.blue,
-          icon: Icons.cloud_upload,
-          // UPLOADS ENTRY
-          onTap: () {
-            entry.upload(userId);
-          },
-        ),
+            caption: 'Upload',
+            color: Colors.blue,
+            icon: Icons.cloud_upload,
+            // UPLOADS ENTRY
+            onTap: () => _checkPin(context, _uploadEntry)),
         IconSlideAction(
-          caption: 'Share',
-          color: Colors.lightGreen,
-          icon: Icons.share,
-          // SHARES ENTRY
-          onTap: () {
-            Share.share(entry.body);
-          },
-        ),
+            caption: 'Share',
+            color: Colors.lightGreen,
+            icon: Icons.share,
+            // SHARES ENTRY
+            onTap: () => _checkPin(context, _shareEntry)),
         IconSlideAction(
           caption: 'Stats',
           color: Colors.blueGrey,

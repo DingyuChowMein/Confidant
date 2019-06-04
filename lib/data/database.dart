@@ -12,6 +12,7 @@ const String ID = "id";
 const String TITLE = "title";
 const String BODY = "body";
 const String DATETIME = "datetime";
+const String PIN_PROTECTED = "pin_protected";
 
 const num NUM_CHARS_IN_DATE = 10;
 
@@ -35,7 +36,8 @@ class EntriesDatabase {
       await db.execute('''CREATE TABLE $TABLE_NAME ( 
           $DATETIME STRING PRIMARY KEY, 
           $TITLE TEXT NOT NULL,
-          $BODY TEXT NOT NULL)''');
+          $BODY TEXT NOT NULL,
+          $PIN_PROTECTED TEXT NOT NULL)''');
     });
   }
 
@@ -48,9 +50,9 @@ class EntriesDatabase {
     var db = await _getDb();
     return await db.rawInsert(
         'INSERT OR REPLACE INTO '
-        '$TABLE_NAME($DATETIME, $TITLE, $BODY)'
-        ' VALUES(?, ?, ?)',
-        [entry.dateTime, entry.title, entry.body]);
+        '$TABLE_NAME($DATETIME, $TITLE, $BODY, $PIN_PROTECTED)'
+        ' VALUES(?, ?, ?, ?)',
+        [entry.dateTime, entry.title, entry.body, entry.pinProtected]);
   }
 
   Future<List<Entry>> getEntries() async {
@@ -72,33 +74,44 @@ class EntriesDatabase {
 }
 
 class Entry {
+  static const String TRUE_BIT = '1';
+
   String key;
   String userId;
 
   String title;
   String body;
   String dateTime;
+  bool pinProtected;
 
   FirebaseDatabase _fdb = FirebaseDatabase.instance;
 
-  Entry({this.dateTime, this.title = "", this.body = "", this.userId = ""});
+  Entry(
+      {this.dateTime,
+      this.title = "",
+      this.body = "",
+      this.userId = "",
+      this.pinProtected = false});
 
   Entry.fromMap(Map map) {
     dateTime = map[DATETIME];
     title = map[TITLE];
     body = map[BODY];
+    pinProtected = map[PIN_PROTECTED] == TRUE_BIT;
   }
 
   Entry.fromSnapshot(DataSnapshot snap) {
     dateTime = snap.key;
-    title = snap.value['title'];
-    body = snap.value['body'];
+    title = snap.value[TITLE];
+    body = snap.value[BODY];
+    pinProtected = snap.value[PIN_PROTECTED];
   }
 
-  Map<String, String> toJson() {
+  Map<String, dynamic> toJson() {
     return {
-      "title": title,
-      "body": body,
+      TITLE: title,
+      BODY: body,
+      PIN_PROTECTED: pinProtected
     };
   }
 

@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-//import 'package:pinput/pin_put/pin_put.dart';
-
-//import 'package:pin_code_view/pin_code_view.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 
 const String ENTRY_PIN_PREF = "entry-pin";
