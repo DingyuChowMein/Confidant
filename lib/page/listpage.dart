@@ -34,22 +34,6 @@ class _ListPageState extends State<ListPage> {
   FirebaseDatabase _fdb = FirebaseDatabase.instance;
   SharedPreferences prefs;
 
- /* Future<String> fetchPost() async {
-    final String userPass = "apikey:7WAbN9QUhcR8QlNjbI7N3N4jWonTh1nRF59gx2cv-sjU";
-    final String url = 'https://$userPass@gateway-lon.watsonplatform.net/tone-analyzer/api';
-    final String params = '''/v3/tone?version=2017-09-21&text=Team%2C%20I%20know%20that%20times%20are%20tough%21%20Product%20sales%20have%20been%20disappointing%20for%20the%20past%20three%20quarters.%20We%20have%20a%20competitive%20product%2C%20but%20we%20need%20to%20do%20a%20better%20job%20of%20selling%20it%21''';
-
-    //HttpHeaders.
-
-    final response = await http.get(
-      url + params,
-    );
-    final responseJson = json.decode(response.body);
-
-    print(responseJson.toString());
-    return responseJson.toString();
-  }*/
-
   void _getPrefs() async {
     prefs = await SharedPreferences.getInstance();
   }

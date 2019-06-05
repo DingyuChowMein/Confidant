@@ -21,6 +21,7 @@ class EntryPage extends StatefulWidget {
 class _EntryPageState extends State<EntryPage> {
   Entry entry;
   EmotionalAnalysis analysis;
+  String mainToneString = '';
 
   _EntryPageState(this.entry);
 
@@ -42,12 +43,22 @@ class _EntryPageState extends State<EntryPage> {
       print('analysing');
       // calls 'save' on all widgets in current state
       _formKey.currentState.save();
-      //entry.save();
+      entry.save();
       entry.analyse().then((analysisResult) {
         setState(() {
           analysis = analysisResult;
+          mainToneString = "Overall: ${entry.calcMainTone(analysis).name}";
         });
       });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (entry.toneJsonString != '') {
+      analysis = entry.analyseWithPreexistingJson();
+      mainToneString = "Overall: ${entry.calcMainTone(analysis).name}";
     }
   }
 
@@ -72,17 +83,10 @@ class _EntryPageState extends State<EntryPage> {
                       style: Theme.of(context).textTheme.headline),
                 ),
                 new ListTile(
-                    title: new Text("Beautiful info goes here"), onTap: () {}),
+                    title: Text(mainToneString), onTap: () {}),
                 Center(
                   child: Container(
                     child: EmotionalRadarChart(
-                      /*emotionSet: EmotionSet(
-                          angerIntensity: 5,
-                          fearIntensity: 4,
-                          joyIntensity: 8,
-                          tentativeIntensity: 4,
-                          confidentIntensity: 9,
-                          analyticalIntensity: 5),*/
                       emotionSet: EmotionSet.fromAnalysis(analysis),
                     ),
                   ),

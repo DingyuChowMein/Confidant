@@ -107,6 +107,9 @@ class IndividualTone {
       case 'fear':
         emotion = Fear(intensity);
         break;
+      case 'tentative':
+        emotion = Tentative(intensity);
+        break;
       default:
         emotion = Anger(-1);
     }

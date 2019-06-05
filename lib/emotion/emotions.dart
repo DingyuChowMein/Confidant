@@ -92,7 +92,7 @@ class EmotionSet {
     double analyticalAccumulator = DEFAULT_EMOTIONAL_INTENSITY;
 
     if (ea.sentences != null) {
-      //print('got null');
+      print('got null');
       List<SentenceTone> sentences = ea.sentences;
 
       for (SentenceTone s in sentences) {
@@ -127,7 +127,7 @@ class EmotionSet {
         }
       }
     } else {
-      //print('got here');
+      print('got here');
       DocumentTone docTone = ea.docTone;
       for (IndividualTone t in docTone.tones) {
         Emotion e = t.emotion;
