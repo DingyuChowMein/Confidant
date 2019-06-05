@@ -16,7 +16,7 @@ import 'package:confidant/emotion/emotions.dart';
 
 class EmotionalRadarChart extends StatelessWidget {
   //final List<double> data;
-  final double maxValue = 10;
+  double maxValue = 10;
 
   //final List<Color> colors;
   final decimalPrecision = 0.1;
@@ -32,7 +32,9 @@ class EmotionalRadarChart extends StatelessWidget {
     this.size = Size.infinite,
     this.fallbackHeight = 200,
     this.fallbackWidth = 200,
-  }) : super(key: key);
+  }) : super(key: key) {
+    this.maxValue = emotionSet.maxValue();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +111,7 @@ class EmotionalRadarChartPainter extends CustomPainter {
       List<Emotion> emotionList) {
     var textPainter = TextPainter(textDirection: TextDirection.ltr);
     for (var i = 0; i < points.length; i++) {
-      String s = emotionList[i].name;
+      String s = emotionList[i].intensity > 0 ? emotionList[i].name : '';
       textPainter.text =
           TextSpan(text: s, style: TextStyle(color: Colors.black));
       textPainter.layout();

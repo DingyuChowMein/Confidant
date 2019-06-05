@@ -5,6 +5,7 @@ import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/widget/radarlove.dart';
 import 'package:confidant/widget/entrytextinput.dart';
 import 'package:confidant/emotion/emotions.dart';
+import 'package:confidant/emotion/tonejson.dart';
 
 class EntryPage extends StatefulWidget {
   EntryPage(this.entry);
@@ -19,6 +20,7 @@ class EntryPage extends StatefulWidget {
 
 class _EntryPageState extends State<EntryPage> {
   Entry entry;
+  EmotionalAnalysis analysis;
 
   _EntryPageState(this.entry);
 
@@ -26,7 +28,7 @@ class _EntryPageState extends State<EntryPage> {
   // us to validate the form
   var _formKey = GlobalKey<FormState>();
 
-  void saveEntry() {
+  void _saveEntry() {
     // calls 'validate' on all widgets in current state
     if (_formKey.currentState.validate()) {
       // calls 'save' on all widgets in current state
@@ -35,11 +37,25 @@ class _EntryPageState extends State<EntryPage> {
     }
   }
 
+  void _analyseEntry() {
+    if (_formKey.currentState.validate()) {
+      print('analysing');
+      // calls 'save' on all widgets in current state
+      _formKey.currentState.save();
+      //entry.save();
+      entry.analyse().then((analysisResult) {
+        setState(() {
+          analysis = analysisResult;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          saveEntry();
+          _saveEntry();
           ScopeBaseWidget.of(context).bloc.refresh();
           return true;
         },
@@ -60,13 +76,14 @@ class _EntryPageState extends State<EntryPage> {
                 Center(
                   child: Container(
                     child: EmotionalRadarChart(
-                      emotionSet: EmotionSet(
+                      /*emotionSet: EmotionSet(
                           angerIntensity: 5,
                           fearIntensity: 4,
                           joyIntensity: 8,
                           tentativeIntensity: 4,
                           confidentIntensity: 9,
-                          analyticalIntensity: 5),
+                          analyticalIntensity: 5),*/
+                      emotionSet: EmotionSet.fromAnalysis(analysis),
                     ),
                   ),
                 )
@@ -110,7 +127,7 @@ class _EntryPageState extends State<EntryPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     FlatButton(
-                      onPressed: () => saveEntry(), //Save Button
+                      onPressed: () => _saveEntry(), //Save Button
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.save,
@@ -124,13 +141,24 @@ class _EntryPageState extends State<EntryPage> {
                       onPressed: () {
                         entry.delete();
                         Navigator.pop(context);
-                      }, //Save Button
+                      },
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.delete,
                               color: Theme.of(context).iconTheme.color),
                           SizedBox(width: 3),
                           Text('Delete')
+                        ],
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () => _analyseEntry(),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.remove_red_eye,
+                              color: Theme.of(context).iconTheme.color),
+                          SizedBox(width: 3),
+                          Text('Analyse')
                         ],
                       ),
                     ),
