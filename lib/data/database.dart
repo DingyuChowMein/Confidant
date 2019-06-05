@@ -139,14 +139,10 @@ class Entry {
     EntriesDatabase.get().deleteEntry(dateTime);
   }
 
-  String bodyToUri() {
-    return Uri.encodeFull(body);
-  }
-
   Future<EmotionalAnalysis> analyse() async {
     final String userPass = "apikey:7WAbN9QUhcR8QlNjbI7N3N4jWonTh1nRF59gx2cv-sjU";
     final String args = '/v3/tone?version=2017-09-21&text=';
-    final String bodyUri = bodyToUri();
+    final String bodyUri = Uri.encodeFull(body);
     final String url = 'https://$userPass@gateway-lon.watsonplatform.net/tone-analyzer/api$args$bodyUri';
 
     final response = await http.get(url);
