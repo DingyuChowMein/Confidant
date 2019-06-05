@@ -38,6 +38,38 @@ class _EntryPageState extends State<EntryPage> {
       entry.save();
     }
   }
+@override
+  void initState() {
+    super.initState();
+    initSpeechRecon();
+  }
+
+  void speechToText(){
+    if (_isAvailable && !_isListening){
+      _speechRecognition
+          .listen(locale:"en_US")
+          .then((result)
+      => entry.body = '$result' );
+    }
+  }
+  
+  void stopRecording(){
+    if(_isListening)
+      _speechRecognition.stop().then(
+          (result) => setState( () => _isListening = result)
+      );
+  }
+
+  void cancelRecording(){
+    if(_isListening){
+      _speechRecognition.cancel().then(
+          (result) => setState( () {
+            _isListening = result;
+            entry.body = "";
+          }),
+      );
+    }
+  }
 
   void initSpeechRecon() {
     _speechRecognition = SpeechRecognition();
@@ -58,6 +90,9 @@ class _EntryPageState extends State<EntryPage> {
     );
 
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +180,7 @@ class _EntryPageState extends State<EntryPage> {
                       ),
                     ),
                     FlatButton(
-                      onPressed: () => saveEntry(),
+                      onPressed: () => speechToText(), // Speech to text button
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.mic,
