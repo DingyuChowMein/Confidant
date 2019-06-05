@@ -13,11 +13,13 @@ class EmotionalAnalysis {
 
     var sentencesTonesJson = json['sentences_tone'] as List;
 
-    List<SentenceTone> tempSentences = sentencesTonesJson
-        .map<SentenceTone>((json) => SentenceTone.fromJson(json))
-        .toList();
-
-    return EmotionalAnalysis(docTone: tempDocTone, sentences: tempSentences);
+    if (sentencesTonesJson != null) {
+      List<SentenceTone> tempSentences = sentencesTonesJson
+          .map<SentenceTone>((json) => SentenceTone.fromJson(json))
+          .toList();
+      return EmotionalAnalysis(docTone: tempDocTone, sentences: tempSentences);
+    }
+    return EmotionalAnalysis(docTone: tempDocTone);
   }
 
   @override
@@ -75,7 +77,7 @@ class SentenceTone {
     for (IndividualTone t in tones) {
       s += t.toString() + '\n';
     }
-    return 'sentence id: $sentenceId. text: $text\n $s' ;
+    return 'sentence id: $sentenceId. text: $text\n $s';
   }
 }
 

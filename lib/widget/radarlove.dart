@@ -34,6 +34,7 @@ class EmotionalRadarChart extends StatelessWidget {
     this.fallbackWidth = 200,
   }) : super(key: key) {
     this.maxValue = emotionSet.maxValue();
+    if (maxValue < 5) maxValue = 5;
   }
 
   @override
