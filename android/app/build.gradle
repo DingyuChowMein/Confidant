@@ -68,7 +68,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:17.0.0'
     compile 'com.android.support:appcompat-v7:26.0.0'
     compile 'com.android.support:multidex:1.0.1'
-//    compile 'com.ibm.watson:ibm-watson:7.0.0'
+   // compile 'com.ibm.watson:ibm-watson:7.0.0'
    // compile(name:'library-release', ext:'aar')
 }
 

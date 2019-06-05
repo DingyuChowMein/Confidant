@@ -5,6 +5,7 @@ import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/widget/radarlove.dart';
 import 'package:confidant/widget/entrytextinput.dart';
 import 'package:confidant/emotion/emotions.dart';
+import 'package:speech_recognition/speech_recognition.dart';
 
 class EntryPage extends StatefulWidget {
   EntryPage(this.entry);
@@ -19,6 +20,9 @@ class EntryPage extends StatefulWidget {
 
 class _EntryPageState extends State<EntryPage> {
   Entry entry;
+  SpeechRecognition _speechRecognition = SpeechRecognition();
+  bool _isAvailable = false;
+  bool _isListening = false;
 
   _EntryPageState(this.entry);
 
@@ -33,6 +37,26 @@ class _EntryPageState extends State<EntryPage> {
       _formKey.currentState.save();
       entry.save();
     }
+  }
+
+  void initSpeechRecon() {
+    _speechRecognition = SpeechRecognition();
+    _speechRecognition.setAvailabilityHandler(
+            (bool result) => setState(() => _isAvailable = result)
+    );
+
+    _speechRecognition.setRecognitionStartedHandler(
+        () => setState (() => _isListening = true),
+    );
+
+    _speechRecognition.setRecognitionResultHandler(
+        (String speech) => setState( () => entry.body = speech),
+    );
+
+    _speechRecognition.setRecognitionCompleteHandler(
+          () => setState (() => _isListening = false),
+    );
+
   }
 
   @override
@@ -117,6 +141,17 @@ class _EntryPageState extends State<EntryPage> {
                               color: Theme.of(context).iconTheme.color),
                           SizedBox(width: 3),
                           Text('Save')
+                        ],
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () => saveEntry(),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.mic,
+                              color: Theme.of(context).iconTheme.color),
+                          SizedBox(width: 3),
+                          Text('Speak')
                         ],
                       ),
                     ),

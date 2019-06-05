@@ -15,6 +15,9 @@ allprojects {
         google()
         jcenter()
     }
+//    flatDir {
+//        dirs 'src/main/libs'
+//    }
 }
 
 rootProject.buildDir = '../build'
