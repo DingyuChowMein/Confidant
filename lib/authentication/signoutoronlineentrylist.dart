@@ -148,13 +148,15 @@ class _SignoutPageState extends State<SignoutPage> {
 
   Widget _buildItem(BuildContext context, DataSnapshot snapshot,
       Animation<double> animation, int index, SlidableController controller) {
-    String title = snapshot.value['title'];
-    String body = snapshot.value['body'];
-    bool pinProtected = snapshot.value['pin_protected'];
+    String title = snapshot.value[TITLE];
+    String body = snapshot.value[BODY];
+    bool pinProtected = snapshot.value[PIN_PROTECTED];
+    String toneJsonString = snapshot.value[TONE_JSON];
     String dateTime = snapshot.key;
 
+    Entry thisEntry = new Entry(dateTime: dateTime, title: title, body: body, pinProtected: pinProtected, toneJsonString: toneJsonString);
     final int mentalState = -15 + (new Random()).nextInt(30);
-    Color bgColour = _getEmotionColour(mentalState, pinProtected);
+    //Color bgColour = _getEmotionColour(mentalState, pinProtected);
 
     return Slidable(
       key: ValueKey(dateTime),
@@ -175,7 +177,7 @@ class _SignoutPageState extends State<SignoutPage> {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.2,
       child: Container(
-        color: bgColour,
+        color: thisEntry.calcMainColour(),
         child: ListTile(
           leading:
               Container(
