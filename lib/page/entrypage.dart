@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:confidant/data/database.dart';
@@ -47,7 +49,9 @@ class _EntryPageState extends State<EntryPage> {
       entry.analyse().then((analysisResult) {
         setState(() {
           analysis = analysisResult;
-          mainToneString = "Overall: ${entry.calcMainTone(analysis).name}";
+          mainToneString = "Overall: ${entry
+              .calcMainTone(analysis)
+              .name}";
         });
       });
     }
@@ -58,7 +62,9 @@ class _EntryPageState extends State<EntryPage> {
     super.initState();
     if (entry.toneJsonString != '') {
       analysis = entry.analyseWithPreexistingJson();
-      mainToneString = "Overall: ${entry.calcMainTone(analysis).name}";
+      mainToneString = "Overall: ${entry
+          .calcMainTone(analysis)
+          .name}";
     }
   }
 
@@ -76,39 +82,45 @@ class _EntryPageState extends State<EntryPage> {
               /** TODO: EMOTIONAL ANALYSIS INFO STUFF **/
               endDrawer: Drawer(
                   child: Column(children: <Widget>[
-                Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.all(30),
-                  child: Text('Emotional Analysis',
-                      style: Theme.of(context).textTheme.headline),
-                ),
-                new ListTile(
-                    title: Text(mainToneString), onTap: () {}),
-                Center(
-                  child: Container(
-                    child: EmotionalRadarChart(
-                      emotionSet: EmotionSet.fromAnalysis(analysis),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      padding: EdgeInsets.all(30),
+                      child: Text('Emotional Analysis',
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .headline),
                     ),
-                  ),
-                )
-              ])),
+                    new ListTile(
+                        title: Text(mainToneString), onTap: () {}),
+                    Center(
+                      child: Container(
+                        child: EmotionalRadarChart(
+                          emotionSet: EmotionSet.fromAnalysis(analysis),
+                        ),
+                      ),
+                    )
+                  ])),
               appBar: AppBar(
                 title: Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Expanded(
                         child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 4),
                             child: TextFormField(
                               initialValue:
-                                  entry.title == "" ? "Untitled" : entry.title,
+                              entry.title == "" ? "Untitled" : entry.title,
                               onSaved: (s) => entry.title = s,
                               validator: (s) =>
-                                  s.length > 2 ? null : 'Give it a title',
+                              s.length > 2 ? null : 'Give it a title',
                               textCapitalization: TextCapitalization.sentences,
-                              style: Theme.of(context).textTheme.title,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .title,
                               decoration:
-                                  InputDecoration(border: InputBorder.none),
+                              InputDecoration(border: InputBorder.none),
                               autofocus: true,
                             )),
                       )
@@ -116,26 +128,37 @@ class _EntryPageState extends State<EntryPage> {
               ),
               body: EntryTextInput(
                   textFormField: TextFormField(
-                initialValue: entry.body,
-                onSaved: (s) => entry.body = s,
-                validator: (s) => s.length > 2 ? null : 'Give it a body',
-                textCapitalization: TextCapitalization.sentences,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                style: Theme.of(context).textTheme.body1,
-                decoration: InputDecoration.collapsed(hintText: 'Type'),
-              )),
+                    initialValue: entry.body,
+                    onSaved: (s) => entry.body = s,
+                    validator: (s) => s.length > 2 ? null : 'Give it a body',
+                    textCapitalization: TextCapitalization.sentences,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .body1,
+                    decoration: InputDecoration.collapsed(hintText: 'Type'),
+                  )),
               bottomNavigationBar: BottomAppBar(
-                color: Theme.of(context).buttonColor,
+                color: Theme
+                    .of(context)
+                    .buttonColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     FlatButton(
-                      onPressed: () => _saveEntry(), //Save Button
+                      onPressed: () {
+                        _saveEntry();
+                        return _displaySaved();
+                      }, //Save Button
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.save,
-                              color: Theme.of(context).iconTheme.color),
+                              color: Theme
+                                  .of(context)
+                                  .iconTheme
+                                  .color),
                           SizedBox(width: 3),
                           Text('Save')
                         ],
@@ -143,13 +166,15 @@ class _EntryPageState extends State<EntryPage> {
                     ),
                     FlatButton(
                       onPressed: () {
-                        entry.delete();
-                        Navigator.pop(context);
+                        return _verifyDeletionIntention(context);
                       },
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.delete,
-                              color: Theme.of(context).iconTheme.color),
+                              color: Theme
+                                  .of(context)
+                                  .iconTheme
+                                  .color),
                           SizedBox(width: 3),
                           Text('Delete')
                         ],
@@ -160,7 +185,10 @@ class _EntryPageState extends State<EntryPage> {
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.remove_red_eye,
-                              color: Theme.of(context).iconTheme.color),
+                              color: Theme
+                                  .of(context)
+                                  .iconTheme
+                                  .color),
                           SizedBox(width: 3),
                           Text('Analyse')
                         ],
@@ -179,4 +207,58 @@ class _EntryPageState extends State<EntryPage> {
               ),
             )));
   }
+
+  FutureOr<bool> _displaySaved() {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Saved', style: Theme
+              .of(context)
+              .textTheme
+              .body2),
+          content: Text('Your entry has been saved.'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  FutureOr<bool> _verifyDeletionIntention(context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete', style: Theme.of(context).textTheme.body2),
+          content: Text('Are you sure you\'d like to delete this entry?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                Navigator.of(context).pop();
+                entry.delete();
+                ScopeBaseWidget.of(context).bloc.refresh();
+                return true;
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

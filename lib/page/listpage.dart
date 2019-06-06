@@ -206,7 +206,10 @@ class EntryListItem extends StatelessWidget {
     );
   }
 
-  void _uploadEntry() {
+  FutureOr<bool> _uploadEntry(context) {
+    if (userId == LOGGED_OUT_POP) {
+      return _loginToUpload(context);
+    }
     entry.upload(userId);
   }
 
@@ -223,11 +226,11 @@ class EntryListItem extends StatelessWidget {
     if (entry.pinProtected) {
       _checkPinDialog(context).then((pinCorrect) {
         if (pinCorrect != null && pinCorrect) {
-          doAction();
+          doAction(context);
         }
       });
     } else {
-      doAction();
+      doAction(context);
     }
   }
 
@@ -324,6 +327,29 @@ class EntryListItem extends StatelessWidget {
           onTap: () => {},
         ),
       ],
+    );
+  }
+
+  FutureOr<bool> _loginToUpload(context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Not Logged In', style: Theme
+              .of(context)
+              .textTheme
+              .body2),
+          content: Text('Please login to upload your note.'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
