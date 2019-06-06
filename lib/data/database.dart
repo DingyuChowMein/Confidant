@@ -215,8 +215,6 @@ class Entry {
     toneJsonString = response.body;
     print(toneJsonString);
 
-    //final String response = '''{document_tone: {tones: [{score: 0.707864, tone_id: anger, tone_name: Anger}]}, sentences_tone: [{sentence_id: 0, text: i hate you, tones: [{score: 0.931034, tone_id: fear, tone_name: Fear}, {score: 1.0, tone_id: anger, tone_name: Anger}, {score: 0.916667, tone_id: sadness, tone_name: Sadness}]}, {sentence_id: 1, text: you are bad, tones: [{score: 0.931034, tone_id: fear, tone_name: Fear}, {score: 0.931034, tone_id: anger, tone_name: Anger}, {score: 0.916667, tone_id: sadness, tone_name: Sadness}]}, {sentence_id: 2, text: you suck , tones: []}, {sentence_id: 3, text: i am unhappy, tones: [{score: 0.931034, tone_id: anger, tone_name: Anger}, {score: 0.916667, tone_id: sadness, tone_name: Sadness}]}]}''';
-
     print('\n\n');
 
     EmotionalAnalysis analysis = EmotionalAnalysis.fromJson(responseJson);

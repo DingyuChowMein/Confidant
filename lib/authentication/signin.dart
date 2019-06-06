@@ -56,7 +56,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           widget.auth.sendEmailVerification();
           _showVerifyEmailSentDialog();
           print('Signed up user: $userId');
-          _database.reference().child("Users").child(_email.replaceAll('.', '  ')).set(userId);//todo: maybe remove??????
+          _database.reference().child("Users").child(_email.replaceAll('.', '  ')).set(userId);
           // adds user by userId to Db.
         }
         setState(() {
