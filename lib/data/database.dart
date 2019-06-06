@@ -207,12 +207,12 @@ class Entry {
     return analysis;
   }
 
-  Color calcMainColour() {
+  Emotion calcMainToneForList() {
     if (toneJsonString == '' || pinProtected) {
-      return Colors.white;
+      return Emotionless();
     }
     var decodedJson = json.decode(toneJsonString);
-    return calcMainTone(EmotionalAnalysis.fromJson(decodedJson)).colour;
+    return calcMainTone(EmotionalAnalysis.fromJson(decodedJson));
   }
 
 

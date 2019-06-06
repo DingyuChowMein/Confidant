@@ -9,6 +9,7 @@ import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/widget/emotiveface.dart';
 import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/authentication/auth.dart';
+import 'package:confidant/emotion/emotions.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
@@ -255,6 +256,8 @@ class EntryListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     int mentalState = -15 + (new Random()).nextInt(30);
 
+    Emotion mainTone = entry.calcMainToneForList();
+
     //Color bgColour = _getEmotionColour(mentalState);
 
     return Slidable(
@@ -285,14 +288,15 @@ class EntryListItem extends StatelessWidget {
       child: Container(
         /** TODO: DYNAMIC COLOUR **/
         //color: bgColour,
-        color: entry.calcMainColour(),
+        color: mainTone.colour,
         child: ListTile(
           leading: Container(
-              height: 40,
-              width: 40,
+              height: 30,
+              width: 30,
               child: entry.pinProtected
                   ? Icon(Icons.lock)
-                  : EmotiveFace(mentalState)),
+                  : Text(mainTone.emoji)),
+                //: EmotiveFace(mentalState)),
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),

@@ -9,37 +9,46 @@ const double DEFAULT_EMOTIONAL_INTENSITY = 1;
 abstract class Emotion {
   Color colour;
   String name;
+  String emoji;
   double intensity;
 
-  Emotion(this.colour, this.name, this.intensity);
+  Emotion(this.colour, this.name, this.intensity, this.emoji);
+}
+
+class Emotionless extends Emotion {
+  Emotionless() : super(Colors.white, "none", 0, '😶');
 }
 
 class Anger extends Emotion {
-  Anger(double intensity) : super(Colors.red, "anger", intensity);
+  Anger(double intensity) : super(Colors.red, "anger", intensity, '😠');
 }
 
 class Fear extends Emotion {
-  Fear(double intensity) : super(Colors.lightGreen, "fear", intensity);
+  Fear(double intensity) : super(Colors.lightGreen, "fear", intensity, '😨');
 }
 
 class Joy extends Emotion {
-  Joy(double intensity) : super(Colors.yellow, "joy!", intensity);
+  Joy(double intensity) : super(Colors.yellow, "joy!", intensity, '😃');
 }
 
 class Sadness extends Emotion {
-  Sadness(double intensity) : super(Colors.blue[700], "sadness", intensity);
+  Sadness(double intensity)
+      : super(Colors.blue[700], "sadness", intensity, '😥');
 }
 
 class Analytical extends Emotion {
-  Analytical(double intensity) : super(Colors.brown[400], "analytical", intensity);
+  Analytical(double intensity)
+      : super(Colors.brown[400], "analytical", intensity, '🤔');
 }
 
 class Confident extends Emotion {
-  Confident(double intensity) : super(Colors.amber, "confident", intensity);
+  Confident(double intensity)
+      : super(Colors.amber, "confident", intensity, '😎');
 }
 
 class Tentative extends Emotion {
-  Tentative(double intensity) : super(Colors.grey[400], "tentative", intensity);
+  Tentative(double intensity)
+      : super(Colors.grey[400], "tentative", intensity, '😏');
 }
 
 class EmotionSet {
@@ -92,7 +101,8 @@ class EmotionSet {
     double analyticalAccumulator = DEFAULT_EMOTIONAL_INTENSITY;
 
     if (ea.sentences != null) {
-      print('got null');
+      print(
+          'got not null sentences: ${ea.sentences.length} of them to be exact');
       List<SentenceTone> sentences = ea.sentences;
 
       for (SentenceTone s in sentences) {

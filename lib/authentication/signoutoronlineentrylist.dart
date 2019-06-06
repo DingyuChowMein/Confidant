@@ -6,6 +6,7 @@ import 'package:confidant/authentication/auth.dart';
 import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/widget/emotiveface.dart';
 import 'package:confidant/data/database.dart';
+import 'package:confidant/emotion/emotions.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 
@@ -156,6 +157,8 @@ class _SignoutPageState extends State<SignoutPage> {
 
     Entry thisEntry = new Entry(dateTime: dateTime, title: title, body: body, pinProtected: pinProtected, toneJsonString: toneJsonString);
     final int mentalState = -15 + (new Random()).nextInt(30);
+
+    Emotion mainTone = thisEntry.calcMainToneForList();
     //Color bgColour = _getEmotionColour(mentalState, pinProtected);
 
     return Slidable(
@@ -177,15 +180,16 @@ class _SignoutPageState extends State<SignoutPage> {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.2,
       child: Container(
-        color: thisEntry.calcMainColour(),
+        color: mainTone.colour,
         child: ListTile(
           leading:
               Container(
-                  height: 40,
-                  width: 40,
+                  height: 30,
+                  width: 30,
                   child: pinProtected
                       ? Icon(Icons.lock)
-                      : EmotiveFace(mentalState)),
+                      : Text(mainTone.emoji)),
+                      //: EmotiveFace(mentalState)),
           title: Text(title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),

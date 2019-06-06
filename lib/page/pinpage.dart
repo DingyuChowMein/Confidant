@@ -71,6 +71,8 @@ class _PinPageState extends State<PinPage> {
 
   Widget _showPinInput() {
     return PinCodeTextField(
+        pinBoxHeight: 50,
+        pinBoxWidth: 50,
         autofocus: true,
         onDone: (String pinInput) {
           switch (pinMode) {
