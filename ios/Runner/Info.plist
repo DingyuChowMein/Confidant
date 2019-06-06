@@ -41,5 +41,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	<key>NSMicrophoneUsageDescription</key>
+    	<string>We need access to your microphone in order to perform vocal
+    	tone analysis :) </string>
+    	<key>NSSpeechRecognitionDescription</key>
+    	<string> this app needs speech recon. permission </string>
+
 </dict>
 </plist>
