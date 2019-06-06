@@ -206,11 +206,12 @@ class EntryListItem extends StatelessWidget {
     );
   }
 
-  FutureOr<bool> _uploadEntry(context) {
+  void _uploadEntry(context) {
     if (userId == LOGGED_OUT_POP) {
-      return _loginToUpload(context);
+      _loginToUpload(context);
+    } else {
+      entry.upload(userId);
     }
-    entry.upload(userId);
   }
 
   void _shareEntryToUser(context) {
@@ -277,6 +278,24 @@ class EntryListItem extends StatelessWidget {
       _checkPinDialog(context).then((pinCorrect) {
         if (pinCorrect != null && pinCorrect) {
           doAction(context);
+        } else {
+          showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Wrong PIN', style: Theme.of(context).textTheme.body2),
+                content: Text('The PIN you entered was incorrect.'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
         }
       });
     } else {
@@ -379,21 +398,19 @@ class EntryListItem extends StatelessWidget {
     );
   }
 
-  FutureOr<bool> _loginToUpload(context) {
-    return showDialog<bool>(
+  void _loginToUpload(context) {
+    showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Not Logged In', style: Theme
-              .of(context)
-              .textTheme
-              .body2),
+          title:
+              Text('Not Logged In', style: Theme.of(context).textTheme.body2),
           content: Text('Please login to upload your note.'),
           actions: <Widget>[
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(true);
+                Navigator.of(context).pop();
               },
             ),
           ],

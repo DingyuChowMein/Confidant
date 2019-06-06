@@ -232,7 +232,6 @@ class Entry {
     return calcMainTone(EmotionalAnalysis.fromJson(decodedJson));
   }
 
-
   Emotion calcMainTone(EmotionalAnalysis analysis) {
     var docTone = analysis.docTone;
     Emotion biggest = Emotionless();

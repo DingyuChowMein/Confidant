@@ -123,10 +123,6 @@ class _EntryPageState extends State<EntryPage> {
 
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -242,7 +238,7 @@ class _EntryPageState extends State<EntryPage> {
                     FlatButton(
                       onPressed: () {
                         _saveEntry();
-                        return _displaySaved();
+                        _displaySaved();
                       }, //Save Button
                       child: Row(
                         children: <Widget>[
@@ -301,8 +297,8 @@ class _EntryPageState extends State<EntryPage> {
             )));
   }
 
-  FutureOr<bool> _displaySaved() {
-    return showDialog<bool>(
+  void _displaySaved() {
+    showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -315,7 +311,7 @@ class _EntryPageState extends State<EntryPage> {
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(true);
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -324,8 +320,8 @@ class _EntryPageState extends State<EntryPage> {
     );
   }
 
-  FutureOr<bool> _verifyDeletionIntention(context) {
-    return showDialog<bool>(
+  void _verifyDeletionIntention(context) {
+    showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -335,17 +331,16 @@ class _EntryPageState extends State<EntryPage> {
             FlatButton(
               child: Text('No'),
               onPressed: () {
-                Navigator.of(context).pop(false);
+                Navigator.of(context).pop();
               },
             ),
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                Navigator.of(context).pop(true);
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
                 entry.delete();
                 ScopeBaseWidget.of(context).bloc.refresh();
-                return true;
               },
             ),
           ],
