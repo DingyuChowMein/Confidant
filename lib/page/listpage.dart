@@ -243,19 +243,19 @@ class EntryListItem extends StatelessWidget {
     }
   }
 
-  Color _getEmotionColour(int mentalState) {
+  /*Color _getEmotionColour(int mentalState) {
     if (entry.pinProtected) {
       return Colors.white;
     }
     return Color.fromARGB(255, (184 - mentalState * 3.5).round(),
         (133 + mentalState * 27.25).round(), 99 + mentalState);
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
     int mentalState = -15 + (new Random()).nextInt(30);
 
-    Color bgColour = _getEmotionColour(mentalState);
+    //Color bgColour = _getEmotionColour(mentalState);
 
     return Slidable(
       key: ValueKey(entry.dateTime),
@@ -284,7 +284,8 @@ class EntryListItem extends StatelessWidget {
       actionExtentRatio: 0.2,
       child: Container(
         /** TODO: DYNAMIC COLOUR **/
-        color: bgColour,
+        //color: bgColour,
+        color: entry.calcMainColour(),
         child: ListTile(
           leading: Container(
               height: 40,

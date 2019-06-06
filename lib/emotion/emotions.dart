@@ -39,7 +39,7 @@ class Confident extends Emotion {
 }
 
 class Tentative extends Emotion {
-  Tentative(double intensity) : super(Colors.black, "tentative", intensity);
+  Tentative(double intensity) : super(Colors.amber, "tentative", intensity);
 }
 
 class EmotionSet {

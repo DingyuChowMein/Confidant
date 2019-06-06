@@ -7,7 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:flutter/material.dart';
 import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/emotion/tonejson.dart';
 import 'package:confidant/emotion/emotions.dart';
@@ -206,6 +206,15 @@ class Entry {
     print(analysis.toString());
     return analysis;
   }
+
+  Color calcMainColour() {
+    if (toneJsonString == '' || pinProtected) {
+      return Colors.white;
+    }
+    var decodedJson = json.decode(toneJsonString);
+    return calcMainTone(EmotionalAnalysis.fromJson(decodedJson)).colour;
+  }
+
 
   Emotion calcMainTone(EmotionalAnalysis analysis) {
     var docTone = analysis.docTone;
