@@ -31,7 +31,7 @@ class Sadness extends Emotion {
 }
 
 class Analytical extends Emotion {
-  Analytical(double intensity) : super(Colors.brown, "analytical", intensity);
+  Analytical(double intensity) : super(Colors.brown[400], "analytical", intensity);
 }
 
 class Confident extends Emotion {
@@ -39,7 +39,7 @@ class Confident extends Emotion {
 }
 
 class Tentative extends Emotion {
-  Tentative(double intensity) : super(Colors.grey, "tentative", intensity);
+  Tentative(double intensity) : super(Colors.grey[400], "tentative", intensity);
 }
 
 class EmotionSet {
