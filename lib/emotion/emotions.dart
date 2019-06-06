@@ -13,6 +13,15 @@ abstract class Emotion {
   double intensity;
 
   Emotion(this.colour, this.name, this.intensity, this.emoji);
+
+  Widget toLegendWidget() {
+    return Padding(
+        padding: EdgeInsets.only(right: 70),
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+        Text(name, style: TextStyle(fontSize: 18, color: Colors.black)),
+        Text(' ●', style: TextStyle(fontSize: 18, color: colour)),
+        ]));
+  }
 }
 
 class Emotionless extends Emotion {

@@ -113,6 +113,7 @@ class EmotionalRadarChartPainter extends CustomPainter {
     var textPainter = TextPainter(textDirection: TextDirection.ltr);
     for (var i = 0; i < points.length; i++) {
       String s = emotionList[i].intensity > 0 ? emotionList[i].name : '';
+      //String s = '';
       textPainter.text =
           TextSpan(text: s, style: TextStyle(color: Colors.black));
       textPainter.layout();

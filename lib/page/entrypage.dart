@@ -110,17 +110,16 @@ class _EntryPageState extends State<EntryPage> {
     );
 
     _speechRecognition.setRecognitionStartedHandler(
-          () => setState (() => _isListening = true),
+          () => setState(() => _isListening = true),
     );
 
     _speechRecognition.setRecognitionResultHandler(
-          (String speech) => setState( () => entry.body = speech),
+          (String speech) => setState(() => entry.body = speech),
     );
 
     _speechRecognition.setRecognitionCompleteHandler(
-          () => setState (() => _isListening = false),
+          () => setState(() => _isListening = false),
     );
-
   }
 
   @override
@@ -154,7 +153,14 @@ class _EntryPageState extends State<EntryPage> {
                           emotionSet: EmotionSet.fromAnalysis(analysis),
                         ),
                       ),
-                    )
+                    ),
+                    /*Anger(0).toLegendWidget(),
+                    Fear(0).toLegendWidget(),
+                    Joy(0).toLegendWidget(),
+                    Tentative(0).toLegendWidget(),
+                    Confident(0).toLegendWidget(),
+                    Analytical(0).toLegendWidget(),
+                    Sadness(0).toLegendWidget(),*/
                   ])),
               appBar: AppBar(
                 title: Row(
