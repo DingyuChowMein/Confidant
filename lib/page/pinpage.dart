@@ -33,6 +33,7 @@ class _PinPageState extends State<PinPage> {
 
     setState(() {
       pinMode = (currentPin == NULL_PIN) ? PinMode.SET_PIN : PinMode.CHANGE_PIN;
+      _updateTitle();
     });
   }
 
@@ -71,6 +72,8 @@ class _PinPageState extends State<PinPage> {
 
   Widget _showPinInput() {
     return PinCodeTextField(
+        pinBoxHeight: 50,
+        pinBoxWidth: 50,
         autofocus: true,
         onDone: (String pinInput) {
           switch (pinMode) {

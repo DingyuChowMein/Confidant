@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:confidant/page/entrypage.dart';
@@ -8,6 +9,7 @@ import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/widget/emotiveface.dart';
 import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/authentication/auth.dart';
+import 'package:confidant/emotion/emotions.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
@@ -100,8 +102,8 @@ class _ListPageState extends State<ListPage> {
                   if (snapshot.data == null || snapshot.data.length == 0)
                     return Container(
                       padding: EdgeInsets.all(10),
-                      child: Text('Add Entries Here Tbh',
-                          style: TextStyle(fontSize: 32, color: Colors.black)),
+                      child: Text('		you have no entries',
+                          style: TextStyle(fontSize: 20, color: Colors.grey)),
                     );
                   return ListView.builder(
                     itemCount: snapshot.data?.length ?? 0,
@@ -231,7 +233,7 @@ class EntryListItem extends StatelessWidget {
 
   void _checkPinWithContext(
       BuildContext context, Function(BuildContext) doAction) {
-    if (entry.pinProtected) {
+    if (entry.pinProtected && _getCorrectPin() != null) {
       _checkPinDialog(context).then((pinCorrect) {
         if (pinCorrect != null && pinCorrect) {
           doAction(context);
@@ -242,19 +244,13 @@ class EntryListItem extends StatelessWidget {
     }
   }
 
-  Color _getEmotionColour(int mentalState) {
-    if (entry.pinProtected) {
-      return Colors.white;
-    }
-    return Color.fromARGB(255, (184 - mentalState * 3.5).round(),
-        (133 + mentalState * 27.25).round(), 99 + mentalState);
-  }
-
   @override
   Widget build(BuildContext context) {
     int mentalState = -15 + (new Random()).nextInt(30);
 
-    Color bgColour = _getEmotionColour(mentalState);
+    Emotion mainTone = entry.calcMainToneForList();
+
+    //Color bgColour = _getEmotionColour(mentalState);
 
     return Slidable(
       key: ValueKey(entry.dateTime),
@@ -283,14 +279,16 @@ class EntryListItem extends StatelessWidget {
       actionExtentRatio: 0.2,
       child: Container(
         /** TODO: DYNAMIC COLOUR **/
-        color: bgColour,
+        //color: bgColour,
+        color: mainTone.colour,
         child: ListTile(
           leading: Container(
-              height: 40,
-              width: 40,
+              height: 30,
+              width: 30,
               child: entry.pinProtected
                   ? Icon(Icons.lock)
-                  : EmotiveFace(mentalState)),
+                  : Text(mainTone.emoji)),
+                //: EmotiveFace(mentalState)),
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),

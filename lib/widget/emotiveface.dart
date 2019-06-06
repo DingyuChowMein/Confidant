@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as Math;
 
 class EmotiveFace extends StatelessWidget {
-  num happiness;
+  final num happiness;
 
   EmotiveFace(this.happiness);
 
