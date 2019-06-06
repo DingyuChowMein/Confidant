@@ -8,6 +8,8 @@ import 'package:confidant/widget/radarlove.dart';
 import 'package:confidant/widget/entrytextinput.dart';
 import 'package:confidant/emotion/emotions.dart';
 import 'package:confidant/emotion/tonejson.dart';
+import 'package:speech_recognition/speech_recognition.dart';
+
 
 class EntryPage extends StatefulWidget {
   EntryPage(this.entry);
@@ -24,6 +26,10 @@ class _EntryPageState extends State<EntryPage> {
   Entry entry;
   EmotionalAnalysis analysis;
   String mainToneString = '';
+  SpeechRecognition _speechRecognition = SpeechRecognition();
+  bool _isAvailable = false;
+  bool _isListening = false;
+
 
   _EntryPageState(this.entry);
 
@@ -57,6 +63,33 @@ class _EntryPageState extends State<EntryPage> {
     }
   }
 
+  void speechToText(){
+    if (_isAvailable && !_isListening){
+      _speechRecognition
+          .listen(locale:"en_US")
+          .then((result)
+      => entry.body = '$result' );
+    }
+  }
+
+  void stopRecording(){
+    if(_isListening)
+      _speechRecognition.stop().then(
+              (result) => setState( () => _isListening = result)
+      );
+  }
+
+  void cancelRecording(){
+    if(_isListening){
+      _speechRecognition.cancel().then(
+            (result) => setState( () {
+          _isListening = result;
+          entry.body = "";
+        }),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,7 +99,33 @@ class _EntryPageState extends State<EntryPage> {
           .calcMainTone(analysis)
           .name}";
     }
+    initSpeechRecon();
   }
+
+ // ADD INITSPEECHRECON
+  void initSpeechRecon() {
+    _speechRecognition = SpeechRecognition();
+    _speechRecognition.setAvailabilityHandler(
+            (bool result) => setState(() => _isAvailable = result)
+    );
+
+    _speechRecognition.setRecognitionStartedHandler(
+          () => setState (() => _isListening = true),
+    );
+
+    _speechRecognition.setRecognitionResultHandler(
+          (String speech) => setState( () => entry.body = speech),
+    );
+
+    _speechRecognition.setRecognitionCompleteHandler(
+          () => setState (() => _isListening = false),
+    );
+
+  }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -147,6 +206,39 @@ class _EntryPageState extends State<EntryPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+//                FloatingActionButton(
+//                      onPressed: () => speechToText(), //Save Button
+//                      child: Row(
+//                        children: <Widget>[
+//                          Icon(Icons.mic,
+//                              color: Theme.of(context).iconTheme.color),
+//                          SizedBox(width: 3),
+//                          Text('Speak')
+//                        ],
+//                      ),
+//                    ),
+//
+//                    FloatingActionButton(
+//                      onPressed: () => stopRecording(), //Save Button
+//                      child: Row(
+//                        children: <Widget>[
+//                          Icon(Icons.stop,
+//                              color: Theme.of(context).iconTheme.color),
+//                          SizedBox(width: 3),
+//                          Text('Stop ')
+//                        ],
+//                      ),
+//                    ),
+//                    FloatingActionButton(
+//                      onPressed: () => cancelRecording(), //Save Button
+//                      child: Row(
+//                        children: <Widget>[
+//                          Icon(Icons.mic,
+//                              color: Theme.of(context).iconTheme.color),
+//                          SizedBox(width: 3),
+//                          Text('Cancel')
+//                        ],
+//                      ),                    ),
                     FlatButton(
                       onPressed: () {
                         _saveEntry();
@@ -180,6 +272,7 @@ class _EntryPageState extends State<EntryPage> {
                         ],
                       ),
                     ),
+
                     FlatButton(
                       onPressed: () => _analyseEntry(),
                       child: Row(
