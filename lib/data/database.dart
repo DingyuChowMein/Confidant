@@ -165,13 +165,32 @@ class Entry {
     EntriesDatabase.get().insertOrUpdateEntry(this);
   }
 
-  void upload(String userId) async {
+  void upload(String userId, {bool appendUid = false}) async {
     if (userId == LOGGED_OUT_POP) {
       print("can't upload, not signed in"); // todo: take to sign in page
       return;
     }
-    print("trying to upload this dateTime: " + dateTime);
-    _fdb.reference().child(userId).child(dateTime).set(toJson());
+    String dateTimeString = dateTime + (appendUid ? userId : '');
+
+    print("trying to upload this dateTime: " + dateTimeString);
+    _fdb.reference().child(userId).child(dateTimeString).set(toJson());
+  }
+
+  void shareTo(String email) async {
+    String legitEmailPath = email.replaceAll('.', '  ');
+    var usersRef = _fdb.reference().child("Users");
+    usersRef.once().then((DataSnapshot snap) {
+      if (snap.value[legitEmailPath] != null) {
+        var emailRef = _fdb.reference().child("Users").child(legitEmailPath);
+        emailRef.once().then((snap) {
+          print('sharing innit');
+          upload(snap.value, appendUid: true);
+        });
+      } else {
+        // TODO: proper notification
+        print('invalid email to share to');
+      }
+    });
   }
 
   void delete() async {
@@ -218,7 +237,7 @@ class Entry {
 
   Emotion calcMainTone(EmotionalAnalysis analysis) {
     var docTone = analysis.docTone;
-    Emotion biggest = Anger(0);
+    Emotion biggest = Emotionless();
     for (IndividualTone t in docTone.tones) {
       if (t.emotion.intensity > biggest.intensity) {
         biggest = t.emotion;

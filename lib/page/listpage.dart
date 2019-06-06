@@ -210,8 +210,58 @@ class EntryListItem extends StatelessWidget {
     entry.upload(userId);
   }
 
-  void _shareEntry() {
-    Share.share(entry.body);
+  void _shareEntryToUser(context) {
+    final emailFieldController = TextEditingController();
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Share', style: Theme.of(context).textTheme.body2),
+          content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            Text(
+                'To whom would you like to share this entry to? Type their Confidant account\'s email.'),
+            Center(child: TextField(controller: emailFieldController))
+          ]),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Share'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                entry.shareTo(emailFieldController.text);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _shareEntry(context) {
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Share', style: Theme.of(context).textTheme.body2),
+          content: Text('How would you like to share this entry?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('To Another Confidant User'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _shareEntryToUser(context);
+              },
+            ),
+            FlatButton(
+              child: Text('Elsewhere'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Share.share(entry.body);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _openEntry(BuildContext context) {
@@ -285,10 +335,9 @@ class EntryListItem extends StatelessWidget {
           leading: Container(
               height: 30,
               width: 30,
-              child: entry.pinProtected
-                  ? Icon(Icons.lock)
-                  : Text(mainTone.emoji)),
-                //: EmotiveFace(mentalState)),
+              child:
+                  entry.pinProtected ? Icon(Icons.lock) : Text(mainTone.emoji)),
+          //: EmotiveFace(mentalState)),
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),
@@ -315,7 +364,7 @@ class EntryListItem extends StatelessWidget {
             color: Colors.lightGreen,
             icon: Icons.share,
             // SHARES ENTRY
-            onTap: () => _checkPin(context, _shareEntry)),
+            onTap: () => _checkPinWithContext(context, _shareEntry)),
         IconSlideAction(
           caption: 'Stats',
           color: Colors.blueGrey,
