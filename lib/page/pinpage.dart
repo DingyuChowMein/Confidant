@@ -33,6 +33,7 @@ class _PinPageState extends State<PinPage> {
 
     setState(() {
       pinMode = (currentPin == NULL_PIN) ? PinMode.SET_PIN : PinMode.CHANGE_PIN;
+      _updateTitle();
     });
   }
 

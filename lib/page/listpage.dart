@@ -102,8 +102,8 @@ class _ListPageState extends State<ListPage> {
                   if (snapshot.data == null || snapshot.data.length == 0)
                     return Container(
                       padding: EdgeInsets.all(10),
-                      child: Text('Add Entries Here Tbh',
-                          style: TextStyle(fontSize: 32, color: Colors.black)),
+                      child: Text('		you have no entries',
+                          style: TextStyle(fontSize: 20, color: Colors.grey)),
                     );
                   return ListView.builder(
                     itemCount: snapshot.data?.length ?? 0,
@@ -233,7 +233,7 @@ class EntryListItem extends StatelessWidget {
 
   void _checkPinWithContext(
       BuildContext context, Function(BuildContext) doAction) {
-    if (entry.pinProtected) {
+    if (entry.pinProtected && _getCorrectPin() != null) {
       _checkPinDialog(context).then((pinCorrect) {
         if (pinCorrect != null && pinCorrect) {
           doAction(context);
