@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-//  anger, fear, joy, sadness; analytical, confident, tentative
+//  anger, fear, joy, sadness, analytical, confident, tentative
 
 abstract class Emotion {
   Color colour;

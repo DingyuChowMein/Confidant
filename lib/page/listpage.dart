@@ -1,3 +1,4 @@
+import 'package:confidant/widget/colourpicker/WheelPicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -13,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 import 'dart:async';
 import 'dart:math';
+import "package:confidant/globals.dart" as globals;
 
 class ListPage extends StatefulWidget {
   ListPage({Key key}) : super(key: key);
@@ -63,6 +65,20 @@ class _ListPageState extends State<ListPage> {
     });
   }
 
+  void _pickColour() {
+    HSVColor color = HSVColor.fromColor(Colors.white);
+    showDialog<bool> (
+      context: context,
+      builder: (context) {
+        return new ColorDialog(color: color);
+      },
+    );
+  }
+
+  void _credits() {
+
+  }
+
   @override
   void initState() {
     super.initState();
@@ -82,13 +98,19 @@ class _ListPageState extends State<ListPage> {
             IconButton(
               icon: Icon(Icons.color_lens),
               /**TODO: COLOUR PICKER STUFF**/
-              onPressed: () {},
+              onPressed: (_pickColour
+              ),
             ),
             IconButton(
               icon: Icon(Icons.vpn_key),
-              onPressed: _setPin,
+              onPressed: _setPin
             ),
-            IconButton(icon: Icon(Icons.cloud), onPressed: _signInOrUp),
+            IconButton(icon: Icon(Icons.cloud),
+                onPressed: _signInOrUp
+            ),
+            IconButton(icon: Icon(Icons.crop_square),
+                onPressed: _credits
+            ),
           ]),
       body: Container(
           child: Column(
@@ -133,6 +155,56 @@ class _ListPageState extends State<ListPage> {
   void dispose() {
     ScopeBaseWidget.of(context).bloc.dispose();
     super.dispose();
+  }
+}
+
+class ColorDialog extends StatefulWidget {
+  ColorDialog({
+    Key key,
+    HSVColor color,
+}): super(key: key);
+
+  @override
+  ColorDialogState createState() => new ColorDialogState();
+}
+
+
+
+class ColorDialogState extends State<ColorDialog> {
+  HSVColor color = HSVColor.fromColor(Colors.white);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _getContent() {
+    return new AlertDialog(
+      title: Text('Theme Colour', style: Theme.of(context).textTheme.body2),
+      content: WheelPicker(
+        color: color,
+        onChanged: (value) =>
+        setState(() => color = value),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Select'),
+          onPressed: () {
+            //TODO: what the heck
+            print("Current theme colour: " + Theme.of(context).primaryColor.toString());
+            print("Global theme colour: " + globals.themeColor.toString());
+            print("Selected colour: " + color.toColor().toString());
+            globals.themeColor = color.toColor();
+            Navigator.of(context).pop(false);
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _getContent();
   }
 }
 
