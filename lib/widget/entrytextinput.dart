@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class EntryTextInput extends StatelessWidget {
   static const double INSET_AMOUNT = 8.0;
-  TextFormField textFormField;
+  final TextFormField textFormField;
 
   EntryTextInput({this.textFormField});
 

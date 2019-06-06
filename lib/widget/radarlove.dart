@@ -16,7 +16,7 @@ import 'package:confidant/emotion/emotions.dart';
 
 class EmotionalRadarChart extends StatelessWidget {
   //final List<double> data;
-  double maxValue = 10;
+  //final double maxValue;
 
   //final List<Color> colors;
   final decimalPrecision = 0.1;
@@ -32,13 +32,13 @@ class EmotionalRadarChart extends StatelessWidget {
     this.size = Size.infinite,
     this.fallbackHeight = 200,
     this.fallbackWidth = 200,
-  }) : super(key: key) {
-    this.maxValue = emotionSet.maxValue();
-    if (maxValue < 5) maxValue = 5;
-  }
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double maxValue = emotionSet.maxValue();
+    if (maxValue < 5) maxValue = 5;
+
     return LimitedBox(
       maxWidth: fallbackWidth,
       maxHeight: fallbackHeight,
