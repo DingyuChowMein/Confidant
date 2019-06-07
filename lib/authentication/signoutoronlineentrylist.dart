@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:confidant/authentication/auth.dart';
 import 'package:confidant/authentication/portal.dart';
-import 'package:confidant/widget/emotiveface.dart';
+import 'package:confidant/widget/radarlove.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/emotion/emotions.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -108,6 +108,40 @@ class _SignoutPageState extends State<SignoutPage> {
     );
   }
 
+  void _showEmotionStats(BuildContext context, Entry entry) {
+    bool pinProtected = entry.pinProtected;
+
+    const String pinTitle = "Stats Unavailable";
+    const String pinBody = "Entry is PIN protected.";
+
+    Widget body = pinProtected
+        ? Text(pinBody)
+        : Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            EmotionalRadarChart(
+                emotionSet:
+                    EmotionSet.fromAnalysis(entry.analyseWithPreexistingJson()))
+          ]);
+
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(pinProtected ? pinTitle : 'Stats',
+              style: Theme.of(context).textTheme.body2),
+          content: body,
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Color _getEmotionColour(int mentalState, bool pinProtected) {
     if (pinProtected) {
       return Colors.white;
@@ -115,7 +149,6 @@ class _SignoutPageState extends State<SignoutPage> {
     return Color.fromARGB(255, (184 - mentalState * 3.5).round(),
         (133 + mentalState * 27.25).round(), 99 + mentalState);
   }
-
 
   void _downloadEntry(DataSnapshot snapshot) {
     Entry e = Entry.fromSnapshot(snapshot);
@@ -130,9 +163,10 @@ class _SignoutPageState extends State<SignoutPage> {
       context: context,
       builder: (BuildContext buildContext) {
         return AlertDialog(
-          title: Text(pinProtected ? pinTitle : title, style: Theme.of(context).textTheme.body2),
+          title: Text(pinProtected ? pinTitle : title,
+              style: Theme.of(context).textTheme.body2),
           content: SingleChildScrollView(
-              child: Text(pinProtected ? pinBody : body),
+            child: Text(pinProtected ? pinBody : body),
           ),
           actions: <Widget>[
             FlatButton(
@@ -155,7 +189,12 @@ class _SignoutPageState extends State<SignoutPage> {
     String toneJsonString = snapshot.value[TONE_JSON];
     String dateTime = snapshot.key;
 
-    Entry thisEntry = new Entry(dateTime: dateTime, title: title, body: body, pinProtected: pinProtected, toneJsonString: toneJsonString);
+    Entry thisEntry = new Entry(
+        dateTime: dateTime,
+        title: title,
+        body: body,
+        pinProtected: pinProtected,
+        toneJsonString: toneJsonString);
     final int mentalState = -15 + (new Random()).nextInt(30);
 
     Emotion mainTone = thisEntry.calcMainToneForList();
@@ -182,14 +221,11 @@ class _SignoutPageState extends State<SignoutPage> {
       child: Container(
         color: mainTone.colour,
         child: ListTile(
-          leading:
-              Container(
-                  height: 30,
-                  width: 30,
-                  child: pinProtected
-                      ? Icon(Icons.lock)
-                      : Text(mainTone.emoji)),
-                      //: EmotiveFace(mentalState)),
+          leading: Container(
+              height: 30,
+              width: 30,
+              child: pinProtected ? Icon(Icons.lock) : Text(mainTone.emoji)),
+          //: EmotiveFace(mentalState)),
           title: Text(title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),
@@ -215,7 +251,6 @@ class _SignoutPageState extends State<SignoutPage> {
           caption: 'Preview',
           color: Colors.amber,
           icon: Icons.pageview,
-          /** TODO: STATS STUFF **/
           onTap: () => _previewEntry(title, body, pinProtected),
         ),
         IconSlideAction(
@@ -223,7 +258,7 @@ class _SignoutPageState extends State<SignoutPage> {
           color: Colors.blueGrey,
           icon: Icons.tag_faces,
           /** TODO: STATS STUFF **/
-          onTap: () => {},
+          onTap: () => _showEmotionStats(context, thisEntry)
         ),
       ],
     );

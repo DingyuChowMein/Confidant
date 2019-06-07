@@ -7,6 +7,7 @@ import 'package:confidant/page/pinpage.dart';
 import 'package:confidant/data/database.dart';
 import 'package:confidant/widget/scopebase.dart';
 import 'package:confidant/widget/emotiveface.dart';
+import 'package:confidant/widget/radarlove.dart';
 import 'package:confidant/authentication/portal.dart';
 import 'package:confidant/authentication/auth.dart';
 import 'package:confidant/emotion/emotions.dart';
@@ -268,6 +269,30 @@ class EntryListItem extends StatelessWidget {
     );
   }
 
+  void _showEmotionStats(BuildContext context) {
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Stats', style: Theme.of(context).textTheme.body2),
+          content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            EmotionalRadarChart(
+                emotionSet:
+                    EmotionSet.fromAnalysis(entry.analyseWithPreexistingJson()))
+          ]),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _openEntry(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => EntryPage(entry)));
@@ -360,8 +385,6 @@ class EntryListItem extends StatelessWidget {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.2,
       child: Container(
-        /** TODO: DYNAMIC COLOUR **/
-        //color: bgColour,
         color: mainTone.colour,
         child: ListTile(
           leading: Container(
@@ -400,8 +423,7 @@ class EntryListItem extends StatelessWidget {
           caption: 'Stats',
           color: Colors.blueGrey,
           icon: Icons.tag_faces,
-          /** TODO: STATS STUFF **/
-          onTap: () => {},
+          onTap: () => _checkPin(context, _showEmotionStats),
         ),
       ],
     );

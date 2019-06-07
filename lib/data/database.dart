@@ -198,8 +198,9 @@ class Entry {
   }
 
   EmotionalAnalysis analyseWithPreexistingJson() {
-    if (toneJsonString != '')
+    if (toneJsonString != '') {
       return EmotionalAnalysis.fromJson(json.decode(toneJsonString));
+    }
     return null;
   }
 
