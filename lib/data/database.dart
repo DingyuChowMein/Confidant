@@ -165,12 +165,12 @@ class Entry {
     EntriesDatabase.get().insertOrUpdateEntry(this);
   }
 
-  void upload(String userId, {bool appendUid = false}) async {
+  void upload(String userId, {String appendedUid = ''}) async {
     if (userId == LOGGED_OUT_POP) {
       print("can't upload, not signed in"); // todo: take to sign in page
       return;
     }
-    String dateTimeString = dateTime + (appendUid ? userId : '');
+    String dateTimeString = dateTime + (appendedUid ?? 'nullUid');
 
     print("trying to upload this dateTime: " + dateTimeString);
     _fdb.reference().child(userId).child(dateTimeString).set(toJson());
@@ -184,7 +184,7 @@ class Entry {
         var emailRef = _fdb.reference().child("Users").child(legitEmailPath);
         emailRef.once().then((snap) {
           print('sharing innit');
-          upload(snap.value, appendUid: true);
+          upload(snap.value, appendedUid: userId);
         });
       } else {
         // TODO: proper notification
