@@ -257,18 +257,10 @@ class _SignoutPageState extends State<SignoutPage> {
           caption: 'Stats',
           color: Colors.blueGrey,
           icon: Icons.tag_faces,
-          /** TODO: STATS STUFF **/
           onTap: () => _showEmotionStats(context, thisEntry)
         ),
       ],
     );
-
-    /*return Card(
-        color: Colors.brown,
-        child: ListTile(
-            title: Text(snapshot.value['title'])
-        )
-    );*/
   }
 
   Widget _showPrimaryButton() {
