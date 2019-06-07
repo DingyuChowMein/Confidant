@@ -326,7 +326,7 @@ class EntryListItem extends StatelessWidget {
           );
         }
       });
-    } else if (pinFromPrefs == null) {
+    } else if (entry.pinProtected && pinFromPrefs == null) {
       showDialog<bool>(
         context: context,
         builder: (context) {
