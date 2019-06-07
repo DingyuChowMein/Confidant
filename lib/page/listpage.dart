@@ -273,8 +273,10 @@ class EntryListItem extends StatelessWidget {
         context, MaterialPageRoute(builder: (context) => EntryPage(entry)));
   }
 
-  void _checkPin(BuildContext context, Function doAction) {
-    if (entry.pinProtected) {
+  void _checkPin(BuildContext context, Function(BuildContext) doAction) {
+    var pinFromPrefs = _getCorrectPin();
+
+    if (entry.pinProtected && pinFromPrefs != null) {
       _checkPinDialog(context).then((pinCorrect) {
         if (pinCorrect != null && pinCorrect) {
           doAction(context);
@@ -283,7 +285,8 @@ class EntryListItem extends StatelessWidget {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text('Wrong PIN', style: Theme.of(context).textTheme.body2),
+                title:
+                    Text('Wrong PIN', style: Theme.of(context).textTheme.body2),
                 content: Text('The PIN you entered was incorrect.'),
                 actions: <Widget>[
                   FlatButton(
@@ -298,19 +301,26 @@ class EntryListItem extends StatelessWidget {
           );
         }
       });
-    } else {
-      doAction(context);
-    }
-  }
-
-  void _checkPinWithContext(
-      BuildContext context, Function(BuildContext) doAction) {
-    if (entry.pinProtected && _getCorrectPin() != null) {
-      _checkPinDialog(context).then((pinCorrect) {
-        if (pinCorrect != null && pinCorrect) {
-          doAction(context);
-        }
-      });
+    } else if (pinFromPrefs == null) {
+      showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('PIN Protected Entry',
+                style: Theme.of(context).textTheme.body2),
+            content: Text(
+                'You need to set your PIN. Do this by pressing the key icon in the top right.'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } else {
       doAction(context);
     }
@@ -363,7 +373,7 @@ class EntryListItem extends StatelessWidget {
           title: Text(entry.title, style: Theme.of(context).textTheme.body2),
           subtitle: Text(entry.dateTime.substring(0, NUM_CHARS_IN_DATE),
               style: Theme.of(context).textTheme.subtitle),
-          onTap: () => _checkPinWithContext(context, _openEntry),
+          onTap: () => _checkPin(context, _openEntry),
         ),
       ),
       actions: <Widget>[
@@ -371,8 +381,7 @@ class EntryListItem extends StatelessWidget {
             caption: 'Delete',
             color: Colors.red,
             icon: Icons.delete,
-            onTap: () =>
-                _checkPinWithContext(context, _verifyDeletionIntention))
+            onTap: () => _checkPin(context, _verifyDeletionIntention))
       ],
       secondaryActions: <Widget>[
         IconSlideAction(
@@ -386,7 +395,7 @@ class EntryListItem extends StatelessWidget {
             color: Colors.lightGreen,
             icon: Icons.share,
             // SHARES ENTRY
-            onTap: () => _checkPinWithContext(context, _shareEntry)),
+            onTap: () => _checkPin(context, _shareEntry)),
         IconSlideAction(
           caption: 'Stats',
           color: Colors.blueGrey,
