@@ -12,7 +12,6 @@ class EntryTextInput extends StatelessWidget {
 
   EntryTextInput({this.textFormField, this.entry, this.highlightSentences});
 
-
   // TODO: MAKE THIS FUNCTION SMALLER. BREAK IT UP.
   Widget _highlightedSentences(BuildContext context) {
     EmotionalAnalysis analysis = entry.analyseWithPreexistingJson();
@@ -148,8 +147,8 @@ class EntryTextInput extends StatelessWidget {
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [entryText(context)]),
-                        painter: EntryTextInputPainter(height, width, fontSize,
-                            entry, highlightSentences)))),
+                        painter:
+                            EntryTextInputPainter(height, width, fontSize)))),
           ));
     });
   }
@@ -159,11 +158,8 @@ class EntryTextInputPainter extends CustomPainter {
   num height;
   num width;
   num fontSize;
-  Entry entry;
-  bool highlightSentences;
 
-  EntryTextInputPainter(this.height, this.width, this.fontSize, this.entry,
-      this.highlightSentences);
+  EntryTextInputPainter(this.height, this.width, this.fontSize);
 
   double _calcLineIncrementAmount() {
     TextSpan ts = TextSpan(text: 'a', style: TextStyle(fontSize: fontSize));
