@@ -10,7 +10,6 @@ import 'package:confidant/emotion/emotions.dart';
 import 'package:confidant/emotion/tonejson.dart';
 import 'package:speech_recognition/speech_recognition.dart';
 
-
 class EntryPage extends StatefulWidget {
   EntryPage(this.entry);
 
@@ -25,11 +24,11 @@ class EntryPage extends StatefulWidget {
 class _EntryPageState extends State<EntryPage> {
   Entry entry;
   EmotionalAnalysis analysis;
+  bool highlightSentences = false;
   String mainToneString = '';
   SpeechRecognition _speechRecognition = SpeechRecognition();
   bool _isAvailable = false;
   bool _isListening = false;
-
 
   _EntryPageState(this.entry);
 
@@ -55,38 +54,36 @@ class _EntryPageState extends State<EntryPage> {
       entry.analyse().then((analysisResult) {
         setState(() {
           analysis = analysisResult;
-          mainToneString = "Overall: ${entry
-              .calcMainTone(analysis)
-              .name}";
+          mainToneString = "Overall: ${entry.calcMainTone(analysis).name}";
+          highlightSentences = true;
         });
       });
     }
   }
 
-  void speechToText(){
-    if (_isAvailable && !_isListening){
+  void speechToText() {
+    if (_isAvailable && !_isListening) {
       _speechRecognition
-          .listen(locale:"en_US")
-          .then((result)
-      => entry.body = '$result' );
+          .listen(locale: "en_US")
+          .then((result) => entry.body = '$result');
     }
   }
 
-  void stopRecording(){
-    if(_isListening)
-      _speechRecognition.stop().then(
-              (result) => setState( () => _isListening = result)
-      );
+  void stopRecording() {
+    if (_isListening)
+      _speechRecognition
+          .stop()
+          .then((result) => setState(() => _isListening = result));
   }
 
-  void cancelRecording(){
-    if(_isListening){
+  void cancelRecording() {
+    if (_isListening) {
       _speechRecognition.cancel().then(
-            (result) => setState( () {
-          _isListening = result;
-          entry.body = "";
-        }),
-      );
+            (result) => setState(() {
+                  _isListening = result;
+                  entry.body = "";
+                }),
+          );
     }
   }
 
@@ -95,30 +92,27 @@ class _EntryPageState extends State<EntryPage> {
     super.initState();
     if (entry.toneJsonString != '') {
       analysis = entry.analyseWithPreexistingJson();
-      mainToneString = "Overall: ${entry
-          .calcMainTone(analysis)
-          .name}";
+      mainToneString = "Overall: ${entry.calcMainTone(analysis).name}";
     }
     initSpeechRecon();
   }
 
- // ADD INITSPEECHRECON
+  // ADD INITSPEECHRECON
   void initSpeechRecon() {
     _speechRecognition = SpeechRecognition();
     _speechRecognition.setAvailabilityHandler(
-            (bool result) => setState(() => _isAvailable = result)
-    );
+        (bool result) => setState(() => _isAvailable = result));
 
     _speechRecognition.setRecognitionStartedHandler(
-          () => setState(() => _isListening = true),
+      () => setState(() => _isListening = true),
     );
 
     _speechRecognition.setRecognitionResultHandler(
-          (String speech) => setState(() => entry.body = speech),
+      (String speech) => setState(() => entry.body = speech),
     );
 
     _speechRecognition.setRecognitionCompleteHandler(
-          () => setState(() => _isListening = false),
+      () => setState(() => _isListening = false),
     );
   }
 
@@ -136,75 +130,67 @@ class _EntryPageState extends State<EntryPage> {
               /** TODO: EMOTIONAL ANALYSIS INFO STUFF **/
               endDrawer: Drawer(
                   child: Column(children: <Widget>[
-                    Container(
-                      alignment: Alignment.topLeft,
-                      padding: EdgeInsets.all(30),
-                      child: Text('Emotional Analysis',
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .headline),
+                Container(
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.all(30),
+                  child: Text('Emotional Analysis',
+                      style: Theme.of(context).textTheme.headline),
+                ),
+                new ListTile(title: Text(mainToneString), onTap: () {}),
+                Center(
+                  child: Container(
+                    child: EmotionalRadarChart(
+                      emotionSet: EmotionSet.fromAnalysis(analysis),
                     ),
-                    new ListTile(
-                        title: Text(mainToneString), onTap: () {}),
-                    Center(
-                      child: Container(
-                        child: EmotionalRadarChart(
-                          emotionSet: EmotionSet.fromAnalysis(analysis),
-                        ),
-                      ),
-                    ),
-                    /*Anger(0).toLegendWidget(),
+                  ),
+                ),
+                /*Anger(0).toLegendWidget(),
                     Fear(0).toLegendWidget(),
                     Joy(0).toLegendWidget(),
                     Tentative(0).toLegendWidget(),
                     Confident(0).toLegendWidget(),
                     Analytical(0).toLegendWidget(),
                     Sadness(0).toLegendWidget(),*/
-                  ])),
+              ])),
               appBar: AppBar(
                 title: Row(
-                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Expanded(
                         child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 4),
                             child: TextFormField(
                               initialValue:
-                              entry.title == "" ? "Untitled" : entry.title,
+                                  entry.title == "" ? "Untitled" : entry.title,
                               onSaved: (s) => entry.title = s,
                               validator: (s) =>
-                              s.length > 2 ? null : 'Give it a title',
+                                  s.length > 2 ? null : 'Give it a title',
                               textCapitalization: TextCapitalization.sentences,
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .title,
+                              style: Theme.of(context).textTheme.title,
                               decoration:
-                              InputDecoration(border: InputBorder.none),
+                                  InputDecoration(border: InputBorder.none),
                               autofocus: true,
                             )),
                       )
                     ]),
               ),
               body: EntryTextInput(
+                  entry: entry,
+                  highlightSentences: highlightSentences,
                   textFormField: TextFormField(
+                    //controller: TextEditingController(),
                     initialValue: entry.body,
                     onSaved: (s) => entry.body = s,
                     validator: (s) => s.length > 2 ? null : 'Give it a body',
                     textCapitalization: TextCapitalization.sentences,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .body1,
+                    style: Theme.of(context).textTheme.body1,
+                    // must be same as theme used in painter
                     decoration: InputDecoration.collapsed(hintText: 'Type'),
                   )),
               bottomNavigationBar: BottomAppBar(
-                color: Theme
-                    .of(context)
-                    .buttonColor,
+                color: Theme.of(context).buttonColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -249,10 +235,7 @@ class _EntryPageState extends State<EntryPage> {
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.save,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color),
+                              color: Theme.of(context).iconTheme.color),
                           SizedBox(width: 3),
                           Text('Save')
                         ],
@@ -265,10 +248,7 @@ class _EntryPageState extends State<EntryPage> {
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.delete,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color),
+                              color: Theme.of(context).iconTheme.color),
                           SizedBox(width: 3),
                           Text('Delete')
                         ],
@@ -280,10 +260,7 @@ class _EntryPageState extends State<EntryPage> {
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.remove_red_eye,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color),
+                              color: Theme.of(context).iconTheme.color),
                           SizedBox(width: 3),
                           Text('Analyse')
                         ],
@@ -308,10 +285,7 @@ class _EntryPageState extends State<EntryPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Saved', style: Theme
-              .of(context)
-              .textTheme
-              .body2),
+          title: Text('Saved', style: Theme.of(context).textTheme.body2),
           content: Text('Your entry has been saved.'),
           actions: <Widget>[
             FlatButton(
@@ -354,5 +328,4 @@ class _EntryPageState extends State<EntryPage> {
       },
     );
   }
-
 }

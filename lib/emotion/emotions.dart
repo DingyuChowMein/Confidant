@@ -25,7 +25,7 @@ abstract class Emotion {
 }
 
 class Emotionless extends Emotion {
-  Emotionless() : super(Colors.white, "none", 0, '😶');
+  Emotionless() : super(Colors.transparent, "none", 0, '😶');
 }
 
 class Anger extends Emotion {
