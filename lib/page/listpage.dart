@@ -79,14 +79,19 @@ class _ListPageState extends State<ListPage> {
     return Scaffold(
       appBar: AppBar(
           /** TODO: DYNAMIC FACE; use setState() **/
-          leading: IconButton(
-              icon: Icon(Icons.tag_faces),
-              onPressed: () => showAboutDialog(
-                  context: context,
-                  applicationIcon: Icon(Icons.tag_faces),
-                  applicationName: 'Confidant',
-                  applicationLegalese: "Made by Neil Sayers, Maëlhann Rozé, Dingyu Chen, and Nathan Foulsham.",
-                  applicationVersion: '0.0.1')),
+          leading: Container(
+              child: ConstrainedBox(
+                  constraints: BoxConstraints.expand(),
+                  child: FlatButton(
+                      padding: EdgeInsets.all(0.0),
+                      child: Image.asset('assets/logo.png'),
+                      onPressed: () => showAboutDialog(
+                          context: context,
+                          applicationIcon: Icon(Icons.tag_faces),
+                          applicationName: 'Confidant',
+                          applicationLegalese:
+                              "Made by Neil Sayers, Maëlhann Rozé, Dingyu Chen, and Nathan Foulsham.",
+                          applicationVersion: '0.0.1')))),
           title: const Text('Confidant'),
           actions: <Widget>[
             IconButton(

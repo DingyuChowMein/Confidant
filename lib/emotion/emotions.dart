@@ -29,7 +29,7 @@ class Emotionless extends Emotion {
 }
 
 class Anger extends Emotion {
-  Anger(double intensity) : super(Colors.red, "anger", intensity, '😠');
+  Anger(double intensity) : super(Colors.redAccent, "anger", intensity, '😠');
 }
 
 class Fear extends Emotion {
@@ -37,27 +37,27 @@ class Fear extends Emotion {
 }
 
 class Joy extends Emotion {
-  Joy(double intensity) : super(Colors.yellow, "joy!", intensity, '😃');
+  Joy(double intensity) : super(Colors.yellowAccent, "joy!", intensity, '😃');
 }
 
 class Sadness extends Emotion {
   Sadness(double intensity)
-      : super(Colors.blue[700], "sadness", intensity, '😥');
+      : super(Colors.blueAccent, "sadness", intensity, '😥');
 }
 
 class Analytical extends Emotion {
   Analytical(double intensity)
-      : super(Colors.brown[400], "analytical", intensity, '🤔');
+      : super(Colors.brown[300], "analytical", intensity, '🤔');
 }
 
 class Confident extends Emotion {
   Confident(double intensity)
-      : super(Colors.amber, "confident", intensity, '😎');
+      : super(Colors.amberAccent, "confident", intensity, '😎');
 }
 
 class Tentative extends Emotion {
   Tentative(double intensity)
-      : super(Colors.grey[400], "tentative", intensity, '😏');
+      : super(Colors.grey[350], "tentative", intensity, '😏');
 }
 
 class EmotionSet {
