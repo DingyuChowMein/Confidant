@@ -32,6 +32,9 @@ class _EntryPageState extends State<EntryPage> {
   bool _isAvailable = false;
   bool _isListening = false;
   String resultText = "";
+  var _txt = TextEditingController();
+
+
   _EntryPageState(this.entry);
 
 
@@ -71,6 +74,8 @@ class _EntryPageState extends State<EntryPage> {
           .then((result) => print('$result') );
     }else{
       stopRecording();
+      _txt.value = new TextEditingController
+          .fromValue(new TextEditingValue( text: resultText)).value;
     }
   }
 
@@ -79,9 +84,6 @@ class _EntryPageState extends State<EntryPage> {
       _speechRecognition
           .stop()
           .then((result) => setState(() => _isListening = result));
-    entry.body = resultText;
-    String res = entry.body;
-    print('$res');
   }
 
 //  void cancelRecording() {
@@ -191,8 +193,8 @@ class _EntryPageState extends State<EntryPage> {
                   entry: entry,
                   highlightSentences: highlightSentences,
                   textFormField: TextFormField(
-                    //controller: TextEditingController(),
-                    initialValue: entry.body,
+                    controller: _txt,
+                   // initialValue: entry.body,
                     onSaved: (s) => entry.body = s,
                     validator: (s) => s.length > 2 ? null : 'Give it a body',
                     textCapitalization: TextCapitalization.sentences,
