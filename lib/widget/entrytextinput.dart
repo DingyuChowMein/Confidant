@@ -9,17 +9,27 @@ class EntryTextInput extends StatelessWidget {
   final TextFormField textFormField;
   final Entry entry;
   final bool highlightSentences;
+  final ValueChanged<bool> onChanged;
 
-  EntryTextInput({this.textFormField, this.entry, this.highlightSentences});
+  EntryTextInput(
+      {this.textFormField,
+      this.entry,
+      this.highlightSentences,
+      this.onChanged});
 
-  // TODO: MAKE THIS FUNCTION SMALLER. BREAK IT UP.
-  Widget _highlightedSentences(BuildContext context) {
+  void _handleTap() {
+    onChanged(!highlightSentences);
+  }
+
+  List<TextSpan> _highlightedSentences(BuildContext context) {
+    List<TextSpan> highlightedTextSpans = [];
+
     EmotionalAnalysis analysis = entry.analyseWithPreexistingJson();
     if (analysis == null) {
       print('sentence highlighting failed because analysis var was null');
-      return RichText(
-          text: TextSpan(
-              style: Theme.of(context).textTheme.body1, text: entry.body));
+      highlightedTextSpans.add(
+          TextSpan(style: Theme.of(context).textTheme.body1, text: entry.body));
+      return highlightedTextSpans;
     }
 
     List<SentenceTone> sentences = analysis.sentences;
@@ -30,21 +40,13 @@ class EntryTextInput extends StatelessWidget {
           ? analysis.docTone.tones[0].emotion.colour
           : Emotionless().colour;
 
-      return Padding(
-          padding: EdgeInsets.all(INSET_AMOUNT),
-          child: RichText(
-              text: TextSpan(
-                  style: Theme.of(context).textTheme.body1,
-                  children: <TextSpan>[
-                TextSpan(
-                    text: entry.body,
-                    style: TextStyle(
-                        fontSize: Theme.of(context).textTheme.body1.fontSize,
-                        backgroundColor: docToneColour))
-              ])));
+      highlightedTextSpans.add(TextSpan(
+          text: entry.body,
+          style: TextStyle(
+              fontSize: Theme.of(context).textTheme.body1.fontSize,
+              backgroundColor: docToneColour)));
+      return highlightedTextSpans;
     }
-
-    List<TextSpan> highlightedTextSpans = [];
 
     Iterator<SentenceTone> sentenceListIter = sentences.iterator;
     Iterator<int> bodyIter = entry.body.codeUnits.iterator;
@@ -93,12 +95,7 @@ class EntryTextInput extends StatelessWidget {
                   backgroundColor: sentenceColour)));
 
           if (!sentenceListIter.moveNext()) {
-            return Padding(
-                padding: EdgeInsets.all(INSET_AMOUNT),
-                child: RichText(
-                    text: TextSpan(
-                        style: Theme.of(context).textTheme.body1,
-                        children: highlightedTextSpans)));
+            return highlightedTextSpans;
           }
         } else {
           bodyIter.moveNext();
@@ -106,9 +103,8 @@ class EntryTextInput extends StatelessWidget {
       }
     }
 
-    return Padding(
-        padding: EdgeInsets.all(INSET_AMOUNT),
-        child: Text('shouldnt get here'));
+    // SHOULDNT GET HERE
+    return highlightedTextSpans;
   }
 
   Widget entryText(BuildContext context) {
@@ -117,7 +113,14 @@ class EntryTextInput extends StatelessWidget {
       return unhighlightedSentences(context);
     }
     //print("returning highlighted sentneces");
-    return _highlightedSentences(context);
+    return GestureDetector(
+        onTap: _handleTap,
+        child: Padding(
+            padding: EdgeInsets.all(INSET_AMOUNT),
+            child: RichText(
+                text: TextSpan(
+                    style: Theme.of(context).textTheme.body1,
+                    children: _highlightedSentences(context)))));
   }
 
   Widget unhighlightedSentences(BuildContext context) {
@@ -147,6 +150,7 @@ class EntryTextInput extends StatelessWidget {
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [entryText(context)]),
+                        //children: [unhighlightedSentences(context)]),
                         painter:
                             EntryTextInputPainter(height, width, fontSize)))),
           ));

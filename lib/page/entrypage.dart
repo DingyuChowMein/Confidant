@@ -27,16 +27,13 @@ class _EntryPageState extends State<EntryPage> {
   bool highlightSentences = false;
   String mainToneString = '';
 
-
   SpeechRecognition _speechRecognition = SpeechRecognition();
   bool _isAvailable = false;
   bool _isListening = false;
   String resultText = "";
   var _txt = TextEditingController();
 
-
   _EntryPageState(this.entry);
-
 
   // Create a global key that will uniquely identify the Form widget and allow
   // us to validate the form
@@ -71,11 +68,12 @@ class _EntryPageState extends State<EntryPage> {
     if (_isAvailable && !_isListening) {
       _speechRecognition
           .listen(locale: "en_US")
-          .then((result) => print('$result') );
-    }else{
+          .then((result) => print('$result'));
+    } else {
       stopRecording();
-      _txt.value = new TextEditingController
-          .fromValue(new TextEditingValue( text: resultText)).value;
+      _txt.value = new TextEditingController.fromValue(
+              new TextEditingValue(text: resultText))
+          .value;
     }
   }
 
@@ -112,24 +110,24 @@ class _EntryPageState extends State<EntryPage> {
     _speechRecognition = SpeechRecognition();
 
     _speechRecognition.setAvailabilityHandler(
-          (bool result) => setState(() => _isAvailable = result),
+      (bool result) => setState(() => _isAvailable = result),
     );
 
     _speechRecognition.setRecognitionStartedHandler(
-          () => setState(() => _isListening = true),
+      () => setState(() => _isListening = true),
     );
 
     _speechRecognition.setRecognitionResultHandler(
-          (String speech) => setState(() => resultText = speech),
+      (String speech) => setState(() => resultText = speech),
     );
 
     _speechRecognition.setRecognitionCompleteHandler(
-          () => setState(() => _isListening = false),
+      () => setState(() => _isListening = false),
     );
 
     _speechRecognition.activate().then(
           (result) => setState(() => _isAvailable = result),
-    );
+        );
   }
 
   @override
@@ -191,6 +189,9 @@ class _EntryPageState extends State<EntryPage> {
                     ]),
               ),
               body: EntryTextInput(
+                  onChanged: ((bool newValue) => setState(() {
+                        highlightSentences = newValue;
+                      })),
                   entry: entry,
                   highlightSentences: highlightSentences,
                   textFormField: TextFormField(
@@ -210,7 +211,7 @@ class _EntryPageState extends State<EntryPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                FlatButton(
+                    FlatButton(
                       onPressed: () => speechToText(),
                       child: Row(
                         children: <Widget>[
