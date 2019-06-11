@@ -26,11 +26,14 @@ class _EntryPageState extends State<EntryPage> {
   EmotionalAnalysis analysis;
   bool highlightSentences = false;
   String mainToneString = '';
+
+
   SpeechRecognition _speechRecognition = SpeechRecognition();
   bool _isAvailable = false;
   bool _isListening = false;
-
+  String resultText = "";
   _EntryPageState(this.entry);
+
 
   // Create a global key that will uniquely identify the Form widget and allow
   // us to validate the form
@@ -65,7 +68,9 @@ class _EntryPageState extends State<EntryPage> {
     if (_isAvailable && !_isListening) {
       _speechRecognition
           .listen(locale: "en_US")
-          .then((result) => entry.body = '$result');
+          .then((result) => print('$result') );
+    }else{
+      stopRecording();
     }
   }
 
@@ -74,18 +79,21 @@ class _EntryPageState extends State<EntryPage> {
       _speechRecognition
           .stop()
           .then((result) => setState(() => _isListening = result));
+    entry.body = resultText;
+    String res = entry.body;
+    print('$res');
   }
 
-  void cancelRecording() {
-    if (_isListening) {
-      _speechRecognition.cancel().then(
-            (result) => setState(() {
-                  _isListening = result;
-                  entry.body = "";
-                }),
-          );
-    }
-  }
+//  void cancelRecording() {
+//    if (_isListening) {
+//      _speechRecognition.cancel().then(
+//            (result) => setState(() {
+//                  _isListening = result;
+//                  resultText = "";
+//                }),
+//          );
+//    }
+//  }
 
   @override
   void initState() {
@@ -94,25 +102,30 @@ class _EntryPageState extends State<EntryPage> {
       analysis = entry.analyseWithPreexistingJson();
       mainToneString = "Overall: ${entry.calcMainTone(analysis).name}";
     }
-    initSpeechRecon();
+    initSpeechRecognizer();
   }
 
-  // ADD INITSPEECHRECON
-  void initSpeechRecon() {
+  void initSpeechRecognizer() {
     _speechRecognition = SpeechRecognition();
+
     _speechRecognition.setAvailabilityHandler(
-        (bool result) => setState(() => _isAvailable = result));
+          (bool result) => setState(() => _isAvailable = result),
+    );
 
     _speechRecognition.setRecognitionStartedHandler(
-      () => setState(() => _isListening = true),
+          () => setState(() => _isListening = true),
     );
 
     _speechRecognition.setRecognitionResultHandler(
-      (String speech) => setState(() => entry.body = speech),
+          (String speech) => setState(() => resultText = speech),
     );
 
     _speechRecognition.setRecognitionCompleteHandler(
-      () => setState(() => _isListening = false),
+          () => setState(() => _isListening = false),
+    );
+
+    _speechRecognition.activate().then(
+          (result) => setState(() => _isAvailable = result),
     );
   }
 
@@ -194,17 +207,17 @@ class _EntryPageState extends State<EntryPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-//                FloatingActionButton(
-//                      onPressed: () => speechToText(), //Save Button
-//                      child: Row(
-//                        children: <Widget>[
-//                          Icon(Icons.mic,
-//                              color: Theme.of(context).iconTheme.color),
-//                          SizedBox(width: 3),
-//                          Text('Speak')
-//                        ],
-//                      ),
-//                    ),
+                FlatButton(
+                      onPressed: () => speechToText(),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.mic,
+                              color: Theme.of(context).iconTheme.color),
+                          SizedBox(width: 3),
+                          Text('Speak')
+                        ],
+                      ),
+                    ),
 //
 //                    FloatingActionButton(
 //                      onPressed: () => stopRecording(), //Save Button
@@ -241,19 +254,19 @@ class _EntryPageState extends State<EntryPage> {
                         ],
                       ),
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        return _verifyDeletionIntention(context);
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.delete,
-                              color: Theme.of(context).iconTheme.color),
-                          SizedBox(width: 3),
-                          Text('Delete')
-                        ],
-                      ),
-                    ),
+//                    FlatButton(
+//                      onPressed: () {
+//                        return _verifyDeletionIntention(context);
+//                      },
+//                      child: Row(
+//                        children: <Widget>[
+//                          Icon(Icons.delete,
+//                              color: Theme.of(context).iconTheme.color),
+//                          SizedBox(width: 3),
+//                          Text('Delete')
+//                        ],
+//                      ),
+//                    ),
 
                     FlatButton(
                       onPressed: () => _analyseEntry(),
