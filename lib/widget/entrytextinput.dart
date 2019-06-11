@@ -10,12 +10,14 @@ class EntryTextInput extends StatelessWidget {
   final Entry entry;
   final bool highlightSentences;
   final ValueChanged<bool> onChanged;
+  final FocusNode focusNode;
 
   EntryTextInput(
       {this.textFormField,
       this.entry,
       this.highlightSentences,
-      this.onChanged});
+      this.onChanged,
+      this.focusNode});
 
   void _handleTap() {
     onChanged(!highlightSentences);
@@ -114,7 +116,8 @@ class EntryTextInput extends StatelessWidget {
     }
     //print("returning highlighted sentneces");
     return GestureDetector(
-        onTap: _handleTap,
+        onTap: () => _handleTap(),
+        // todo: whole screen container, rather than just covering text???
         child: Padding(
             padding: EdgeInsets.all(INSET_AMOUNT),
             child: RichText(

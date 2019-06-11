@@ -26,6 +26,7 @@ class _EntryPageState extends State<EntryPage> {
   EmotionalAnalysis analysis;
   bool highlightSentences = false;
   String mainToneString = '';
+  FocusNode entryTextFocusNode = FocusNode();
 
   SpeechRecognition _speechRecognition = SpeechRecognition();
   bool _isAvailable = false;
@@ -150,7 +151,7 @@ class _EntryPageState extends State<EntryPage> {
                   child: Text('Emotional Analysis',
                       style: Theme.of(context).textTheme.headline),
                 ),
-                new ListTile(title: Text(mainToneString), onTap: () {}),
+                ListTile(title: Text(mainToneString), onTap: () {}),
                 Center(
                   child: Container(
                     child: EmotionalRadarChart(
@@ -189,12 +190,17 @@ class _EntryPageState extends State<EntryPage> {
                     ]),
               ),
               body: EntryTextInput(
-                  onChanged: ((bool newValue) => setState(() {
-                        highlightSentences = newValue;
-                      })),
+                  onChanged: ((bool newValue) {
+                    setState(() {
+                      highlightSentences = newValue;
+                    });
+                  }),
                   entry: entry,
+                  //focusNode: entryTextFocusNode,
                   highlightSentences: highlightSentences,
                   textFormField: TextFormField(
+                    autofocus: true,
+                    //focusNode: entryTextFocusNode,
                     controller: _txt,
                     //initialValue: entry.body,
                     onSaved: (s) => entry.body = s,
@@ -274,6 +280,7 @@ class _EntryPageState extends State<EntryPage> {
 
                     FlatButton(
                       onPressed: () => _analyseEntry(),
+                      //onPressed: () => FocusScope.of(context).requestFocus(entryTextFocusNode),
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.remove_red_eye,
