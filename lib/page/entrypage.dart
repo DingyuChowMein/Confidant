@@ -104,6 +104,7 @@ class _EntryPageState extends State<EntryPage> {
       analysis = entry.analyseWithPreexistingJson();
       mainToneString = "Overall: ${entry.calcMainTone(analysis).name}";
     }
+    _txt.text = entry.body;
     initSpeechRecognizer();
   }
 
@@ -194,7 +195,7 @@ class _EntryPageState extends State<EntryPage> {
                   highlightSentences: highlightSentences,
                   textFormField: TextFormField(
                     controller: _txt,
-                   // initialValue: entry.body,
+                    //initialValue: entry.body,
                     onSaved: (s) => entry.body = s,
                     validator: (s) => s.length > 2 ? null : 'Give it a body',
                     textCapitalization: TextCapitalization.sentences,
