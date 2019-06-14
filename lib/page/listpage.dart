@@ -114,9 +114,20 @@ class _ListPageState extends State<ListPage> {
                 builder: (context, snapshot) {
                   if (snapshot.data == null || snapshot.data.length == 0)
                     return Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text('		you have no entries',
-                          style: TextStyle(fontSize: 20, color: Colors.grey)),
+                      decoration: new BoxDecoration(
+                        image: new DecorationImage(
+                            image: new AssetImage("assets/space_background.jpg"),
+                            fit: BoxFit.cover)
+                      ),
+                      /*padding: EdgeInsets.all(100),
+                      child: Scaffold(
+                        backgroundColor: Colors.transparent,
+                        body: ListView(
+                        )
+                      )*/
+
+                      /*Text('You have no entries. Add one!',
+                          style: TextStyle(fontSize: 15, color: Colors.white)),*/
                     );
                   return ListView.builder(
                     itemCount: snapshot.data?.length ?? 0,

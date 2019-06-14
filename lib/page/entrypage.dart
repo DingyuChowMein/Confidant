@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:confidant/widget/barchart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:confidant/data/database.dart';
@@ -9,6 +10,7 @@ import 'package:confidant/widget/entrytextinput.dart';
 import 'package:confidant/emotion/emotions.dart';
 import 'package:confidant/emotion/tonejson.dart';
 import 'package:speech_recognition/speech_recognition.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class EntryPage extends StatefulWidget {
   EntryPage(this.entry);
@@ -131,6 +133,26 @@ class _EntryPageState extends State<EntryPage> {
         );
   }
 
+  /// Create one series with sample hard coded data.
+  static List<charts.Series<EmotionBar, String>> emotionSeries() {
+    final data = [
+      new EmotionBar('2014', 5),
+      new EmotionBar('2015', 25),
+      new EmotionBar('2016', 100),
+      new EmotionBar('2017', 75),
+    ];
+
+    return [
+      new charts.Series<EmotionBar, String>(
+        id: 'Sales',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (EmotionBar sales, _) => sales.year,
+        measureFn: (EmotionBar sales, _) => sales.sales,
+        data: data,
+      )
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -154,8 +176,10 @@ class _EntryPageState extends State<EntryPage> {
                 ListTile(title: Text(mainToneString), onTap: () {}),
                 Center(
                   child: Container(
-                    child: EmotionalRadarChart(
-                      emotionSet: EmotionSet.fromAnalysis(analysis),
+                    child: BarChart()
+
+                    /*EmotionalRadarChart(
+                      emotionSet: EmotionSet.fromAnalysis(analysis),*/
                     ),
                   ),
                 ),
